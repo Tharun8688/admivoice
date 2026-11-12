@@ -14,7 +14,7 @@ const empty = { role: ROLES[0].id as string, name: '', email: '', phone: '', col
 export default function InternshipsPage() {
   const [f, setF] = useState(empty); const [err, setErr] = useState<Record<string, string>>({}); const [state, setState] = useState<'idle' | 'sending' | 'ok' | 'fail'>('idle'); const [msg, setMsg] = useState('')
   const form = useRef<HTMLFormElement>(null)
-  useEffect(() => { window.scrollTo(0, 0); document.title = 'Internships for 2nd-year students — Admivoice'; return () => { document.title = 'Admivoice — AI Admissions Platform' } }, [])
+  useEffect(() => { window.scrollTo(0, 0); document.title = 'Internships for 2nd & 3rd-year students — Admivoice'; return () => { document.title = 'Admivoice — AI Admissions Platform' } }, [])
   const set = (k: keyof typeof empty, v: string) => { setF(p => ({ ...p, [k]: v })); setErr(p => ({ ...p, [k]: '' })); if (state !== 'sending') setState('idle') }
   const apply = (id: string) => { set('role', id); form.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }) }
   const submit = async (e: React.FormEvent) => {
@@ -37,9 +37,9 @@ export default function InternshipsPage() {
           <div className="absolute -right-24 top-0 h-96 w-96 rounded-full bg-brand-600/30 blur-3xl" /><div className="absolute -left-24 bottom-0 h-80 w-80 rounded-full bg-violet2-500/20 blur-3xl" />
           <div className="relative mx-auto max-w-6xl px-5">
             <nav aria-label="Breadcrumb" className="text-sm text-slate-400"><a href="#/" className="hover:text-white">Home</a> <span className="mx-1.5">/</span> <span className="text-slate-200">Internships</span></nav>
-            <span className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs text-slate-200"><GraduationCap size={13} className="text-violet-300" />Open to 2nd-year students</span>
-            <h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">Internships for <span className="bg-gradient-to-r from-violet-300 to-brand-200 bg-clip-text text-transparent">2nd-year students</span></h1>
-            <p className="mt-5 max-w-2xl text-lg text-slate-300">Gain real experience in your second year. Pick a role, apply in two minutes, and earn a certificate on completion.</p>
+            <span className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs text-slate-200"><GraduationCap size={13} className="text-violet-300" />Open to 2nd &amp; 3rd-year students</span>
+            <h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-[1.1] tracking-tight sm:text-5xl">Internships for <span className="bg-gradient-to-r from-violet-300 to-brand-200 bg-clip-text text-transparent">2nd &amp; 3rd-year students</span></h1>
+            <p className="mt-5 max-w-2xl text-lg text-slate-300">Gain real experience in your second or third year. Pick a role, apply in two minutes, and earn a certificate on completion.</p>
             <div className="mt-8 flex flex-wrap gap-3"><button onClick={() => form.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })} className="inline-flex h-12 items-center gap-2 rounded-xl bg-brand-500 px-6 font-medium text-white shadow-lg shadow-brand-600/30 hover:bg-brand-600">Apply now <ArrowRight size={16} /></button><a href="#/login" className="inline-flex h-12 items-center rounded-xl border border-white/20 px-6 font-medium hover:bg-white/5">See the admin portal</a></div>
             <dl className="mt-10 flex flex-wrap gap-x-10 gap-y-4 text-sm"><div><dt className="text-slate-400">Roles open</dt><dd className="text-2xl font-semibold">3</dd></div><div><dt className="text-slate-400">Spots available</dt><dd className="text-2xl font-semibold">10</dd></div><div><dt className="text-slate-400">Duration</dt><dd className="text-2xl font-semibold">6–10 wks</dd></div></dl>
           </div>
@@ -49,7 +49,7 @@ export default function InternshipsPage() {
           <Reveal className="max-w-2xl"><Eyebrow>Open roles</Eyebrow><h2 className="mt-2 text-3xl font-semibold tracking-tight text-ink">Choose your role</h2></Reveal>
           <div className="mt-10 grid gap-5 lg:grid-cols-3">{ROLES.map((r, i) => <Reveal key={r.id} delay={i * 80}><article className="flex h-full flex-col rounded-2xl border border-line bg-white p-6 shadow-card transition-all hover:-translate-y-1 hover:shadow-pop">
             <div className="flex items-start justify-between"><span className="flex h-12 w-12 items-center justify-center rounded-xl bg-navy-900 text-white shadow-md"><r.icon size={22} /></span><span className="rounded-full bg-ok-50 px-2.5 py-1 text-xs font-medium text-ok-700">{r.spots} spots left</span></div>
-            <h3 className="mt-5 text-xl font-semibold">{r.id}</h3><span className="mt-1 w-fit rounded bg-violet2-50 px-1.5 py-0.5 text-xs font-medium text-violet-700">2nd-year students</span>
+            <h3 className="mt-5 text-xl font-semibold">{r.id}</h3><span className="mt-1 w-fit rounded bg-violet2-50 px-1.5 py-0.5 text-xs font-medium text-violet-700">2nd &amp; 3rd year</span>
             <p className="mt-3 text-sm text-ink-3">{r.blurb}</p>
             <p className="mt-5 text-xs font-semibold uppercase tracking-wide text-ink-4">What you'll do</p>
             <ul className="mt-2 space-y-2 text-sm text-ink-2">{r.do.map(d => <li key={d} className="flex gap-2"><Check size={15} className="mt-0.5 shrink-0 text-ok-600" />{d}</li>)}</ul>
@@ -67,18 +67,18 @@ export default function InternshipsPage() {
 
         <section className="bg-canvas py-20"><div className="mx-auto grid max-w-6xl items-start gap-10 px-5 lg:grid-cols-5">
           <Reveal className="lg:col-span-2"><Eyebrow>Apply</Eyebrow><h2 className="mt-2 text-3xl font-semibold tracking-tight text-ink">Apply for an internship</h2><p className="mt-3 text-ink-3">Fill in the form and the internship team will contact you about next steps.</p>
-            <ul className="mt-6 space-y-3 text-sm text-ink-2">{['Open to 2nd-year students', 'Takes about two minutes', 'Hear back by email'].map(t => <li key={t} className="flex items-center gap-2.5"><span className="flex h-5 w-5 items-center justify-center rounded-full bg-ok-50 text-ok-600"><Check size={12} /></span>{t}</li>)}</ul></Reveal>
+            <ul className="mt-6 space-y-3 text-sm text-ink-2">{['Open to 2nd and 3rd-year students', 'Takes about two minutes', 'Hear back by email'].map(t => <li key={t} className="flex items-center gap-2.5"><span className="flex h-5 w-5 items-center justify-center rounded-full bg-ok-50 text-ok-600"><Check size={12} /></span>{t}</li>)}</ul></Reveal>
           <Reveal delay={80} className="lg:col-span-3"><form ref={form} onSubmit={submit} noValidate className="grid gap-4 rounded-2xl border border-line bg-white p-6 shadow-card sm:grid-cols-2">
             <input type="checkbox" tabIndex={-1} autoComplete="off" className="hidden" checked={f.botcheck === 'on'} onChange={e => set('botcheck', e.target.checked ? 'on' : '')} />
             <div className="sm:col-span-2"><Lbl t="Role *"><select className={inpCls()} value={f.role} onChange={e => set('role', e.target.value)}>{ROLES.map(r => <option key={r.id}>{r.id}</option>)}</select></Lbl></div>
             <Lbl t="Full name *" err={err.name}><input className={inpCls(err.name)} value={f.name} onChange={e => set('name', e.target.value)} autoComplete="name" /></Lbl>
             <Lbl t="Email *" err={err.email}><input type="email" className={inpCls(err.email)} value={f.email} onChange={e => set('email', e.target.value)} autoComplete="email" /></Lbl>
             <Lbl t="Phone *" err={err.phone}><input className={inpCls(err.phone)} value={f.phone} onChange={e => set('phone', e.target.value)} autoComplete="tel" placeholder="+91 98765 43210" /></Lbl>
-            <Lbl t="Year of study"><select className={inpCls()} value={f.year} onChange={e => set('year', e.target.value)}>{['2nd year', '1st year', '3rd year', '4th year'].map(y => <option key={y}>{y}</option>)}</select></Lbl>
+            <Lbl t="Year of study"><select className={inpCls()} value={f.year} onChange={e => set('year', e.target.value)}>{['2nd year', '3rd year', '1st year', '4th year'].map(y => <option key={y}>{y}</option>)}</select></Lbl>
             <div className="sm:col-span-2"><Lbl t="College *" err={err.college}><input className={inpCls(err.college)} value={f.college} onChange={e => set('college', e.target.value)} autoComplete="organization" /></Lbl></div>
             <div className="sm:col-span-2"><Lbl t="GitHub / portfolio / LinkedIn (optional)"><input className={inpCls()} value={f.links} onChange={e => set('links', e.target.value)} placeholder="https://" /></Lbl></div>
             <div className="sm:col-span-2"><Lbl t="Why this role?"><textarea rows={3} className={`${inpCls()} h-auto py-2`} value={f.message} onChange={e => set('message', e.target.value)} /></Lbl></div>
-            {f.year !== '2nd year' && <p className="rounded-lg bg-warn-50 px-3 py-2 text-xs text-warn-700 sm:col-span-2">These roles are designed for 2nd-year students. You can still apply and we'll let you know.</p>}
+            {!['2nd year', '3rd year'].includes(f.year) && <p className="rounded-lg bg-warn-50 px-3 py-2 text-xs text-warn-700 sm:col-span-2">These roles are designed for 2nd and 3rd-year students. You can still apply and we'll let you know.</p>}
             <button disabled={state === 'sending'} className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-brand-600 font-medium text-white hover:bg-brand-700 active:scale-[.98] disabled:opacity-60 sm:col-span-2">{state === 'sending' ? <><Loader2 size={15} className="animate-spin" />Sending…</> : <><Send size={15} />Submit application</>}</button>
             {state === 'ok' && <p role="status" className="flex items-center gap-2 rounded-lg bg-ok-50 px-3 py-2 text-sm text-ok-700 sm:col-span-2"><Check size={15} />Application received. We'll email you soon.</p>}
             {state === 'fail' && <p role="alert" className="flex items-center gap-2 rounded-lg bg-bad-50 px-3 py-2 text-sm text-bad-700 sm:col-span-2"><AlertCircle size={15} />{msg} Your details are still in the form.</p>}
