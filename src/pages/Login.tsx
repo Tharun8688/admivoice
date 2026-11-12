@@ -34,6 +34,7 @@ export default function Login() {
           <Field label="Password"><Input type="password" value={pw} onChange={e => setPw(e.target.value)} autoComplete="current-password" /></Field>
           <Field label="Sign in as (demo role)" hint="Roles control what each user can see and do."><Select value={role} onChange={e => setRole(e.target.value as Role)}>{(Object.keys(ROLE_LABEL) as Role[]).map(r => <option key={r} value={r}>{ROLE_LABEL[r]}</option>)}</Select></Field>
           <Button type="submit" variant="primary" className="w-full h-10" disabled={busy}>{busy ? 'Signing in…' : 'Sign in'}</Button>
+          <a href="#/" className="block text-center text-sm text-ink-3 hover:text-ink">← Back to website</a>
           <p className="rounded-lg border border-warn-500/30 bg-warn-50 p-3 text-xs text-warn-700">Demo authentication. Production uses Supabase Auth with row-level security per institution — see README.</p>
         </form>
       </div>

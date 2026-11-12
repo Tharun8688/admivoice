@@ -1,8 +1,9 @@
 import { lazy, Suspense } from 'react'
-import { HashRouter, Route, Routes, Navigate } from 'react-router-dom'
+import { HashRouter, Route, Routes, Navigate, useLocation } from 'react-router-dom'
 import { AppProvider, useApp } from '@/lib/store'
 import Layout from '@/components/Layout'
 import Login from '@/pages/Login'
+import Landing from '@/Landing'
 import { PageSkeleton } from '@/components/ui'
 const Overview = lazy(() => import('@/pages/Overview'))
 const Voice = lazy(() => import('@/pages/Voice'))
@@ -15,8 +16,8 @@ const Integrations = lazy(() => import('@/pages/Integrations'))
 const SettingsPage = lazy(() => import('@/pages/Settings'))
 
 function Routed() {
-  const { session } = useApp()
-  if (!session) return <Login />
+  const { session } = useApp(); const { pathname } = useLocation()
+  if (!session) return pathname === '/login' ? <Login /> : <Landing />
   return (
     <Suspense fallback={<div className="p-8"><PageSkeleton /></div>}>
       <Routes>
