@@ -1,0 +1,28 @@
+import { useState } from 'react'
+import { Check, Minus } from 'lucide-react'
+import { useApp } from '@/lib/store'
+import { INSTITUTIONS } from '@/data/seed'
+import { ROLE_LABEL, ROLE_PERMS, type Perm, type Role } from '@/lib/types'
+import { Badge, Button, Card, CardHeader, Confirm, DataTable, Field, Input, PageHeader, Select, Switch, Tabs, type Col } from '@/components/ui'
+import type { AuditLog } from '@/lib/types'
+import { fmtDateTime } from '@/lib/utils'
+
+const PERM_LABEL: Record<Perm, string> = { view: 'View dashboards', calls: 'AI calls & campaigns', admissions: 'Manage admissions', webconnect: 'WebConnect', contacts: 'Manage contacts', internships: 'Manage internships', integrations: 'Integrations', settings: 'Approve scripts & settings', export: 'Export data' }
+export default function SettingsPage() {
+  const { session, instId, data, can, toast, update, resetDemo } = useApp(); const [tab, setTab] = useState<'general' | 'roles' | 'audit' | 'security'>('general'); const inst = INSTITUTIONS.find(i => i.id === instId)!
+  const [name, setName] = useState(inst.name); const [sec, setSec] = useState({ mfa: true, timeout: true, ip: false }); const [reset, setReset] = useState(false)
+  const cols: Col<AuditLog>[] = [{ key: 'a', header: 'When', sort: r => r.at, render: r => <span className="text-xs text-ink-3">{fmtDateTime(r.at)}</span> }, { key: 'u', header: 'User', sort: r => r.user, render: r => <span className="font-medium">{r.user}</span> }, { key: 'r', header: 'Role', render: r => <Badge>{ROLE_LABEL[r.role]}</Badge> }, { key: 'ac', header: 'Action', render: r => r.action }, { key: 't', header: 'Target', render: r => <span className="text-ink-2">{r.target}</span> }]
+  return (
+    <div className="space-y-5">
+      <PageHeader title="Settings" sub="Institution profile, access control, security and audit trail." />
+      <Tabs value={tab} onChange={setTab} items={[{ id: 'general', label: 'General' }, { id: 'roles', label: 'Roles & permissions' }, { id: 'audit', label: 'Audit log', count: data.audit.length }, { id: 'security', label: 'Security & data' }]} />
+      {tab === 'general' && <Card className="max-w-2xl"><CardHeader title="Institution profile" /><div className="grid gap-4 px-5 pb-5 sm:grid-cols-2"><div className="sm:col-span-2"><Field label="Institution name"><Input value={name} onChange={e => setName(e.target.value)} disabled={!can('settings')} /></Field></div><Field label="City"><Input value={inst.city} disabled /></Field><Field label="Timezone"><Select defaultValue="Asia/Kolkata" disabled={!can('settings')}><option>Asia/Kolkata</option><option>Asia/Dubai</option></Select></Field><Field label="Signed in as"><Input value={`${session?.name} · ${session && ROLE_LABEL[session.role]}`} disabled /></Field><Field label="Institution ID"><Input value={instId} disabled /></Field>
+        <div className="sm:col-span-2"><Button variant="primary" disabled={!can('settings')} onClick={() => { update(d => d, { action: 'Updated institution profile', target: name }); toast('Profile saved (demo — not persisted to a backend)') }}>Save changes</Button>{!can('settings') && <span className="ml-3 text-xs text-ink-3">Your role cannot edit settings.</span>}</div></div></Card>}
+      {tab === 'roles' && <Card><CardHeader title="Role-based access" sub="What each role can do. Switch roles from the profile menu to preview." /><div className="overflow-x-auto"><table className="w-full text-sm"><thead><tr className="border-y border-line bg-slate-50/70 text-xs text-ink-3"><th className="px-5 py-2.5 text-left font-medium">Permission</th>{(Object.keys(ROLE_LABEL) as Role[]).map(r => <th key={r} className={`px-3 text-center font-medium ${session?.role === r ? 'text-brand-700' : ''}`}>{ROLE_LABEL[r]}</th>)}</tr></thead><tbody>{(Object.keys(PERM_LABEL) as Perm[]).map(p => <tr key={p} className="border-b border-line-2 last:border-0"><td className="px-5 py-2.5">{PERM_LABEL[p]}</td>{(Object.keys(ROLE_LABEL) as Role[]).map(r => <td key={r} className="px-3 text-center">{ROLE_PERMS[r].includes(p) ? <Check size={16} className="mx-auto text-ok-600" aria-label="Allowed" /> : <Minus size={16} className="mx-auto text-slate-300" aria-label="Not allowed" />}</td>)}</tr>)}</tbody></table></div></Card>}
+      {tab === 'audit' && <Card><CardHeader title="Audit log" sub="Every significant action is recorded with user, role and timestamp." /><DataTable rows={data.audit} cols={cols} pageSize={12} /></Card>}
+      {tab === 'security' && <div className="grid max-w-2xl gap-4"><Card><CardHeader title="Security policies" sub="UI preview — enforced by Supabase Auth in production" /><div className="space-y-2 px-5 pb-5">{([['mfa', 'Require two-factor authentication'], ['timeout', 'Auto sign-out after 30 min idle'], ['ip', 'Restrict access to campus IP ranges']] as const).map(([k, l]) => <div key={k} className="flex items-center justify-between rounded-lg border border-line px-3 py-2.5 text-sm">{l}<Switch label={l} checked={sec[k]} onChange={v => { setSec({ ...sec, [k]: v }); update(d => d, { action: 'Changed security policy', target: `${l}: ${v ? 'on' : 'off'}` }) }} /></div>)}</div></Card>
+        <Card><CardHeader title="Demo data" sub="All data in this build is sample data stored in your browser." /><div className="px-5 pb-5"><Button variant="danger" onClick={() => setReset(true)}>Reset demo data</Button></div></Card></div>}
+      <Confirm open={reset} onClose={() => setReset(false)} danger title="Reset demo data?" confirmLabel="Reset" body="All changes you made in every institution will be discarded and sample data restored." onConfirm={resetDemo} />
+    </div>
+  )
+}
