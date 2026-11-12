@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
 import { Waves, Code2, Terminal, Megaphone, Link2, RefreshCw, Loader2, AlertCircle, BellRing, HeartHandshake, Building2, ArrowUp, PhoneCall, Globe, GraduationCap, Briefcase, BarChart3, ShieldCheck, Menu, X, ArrowRight, Check, Send, Trash2, Mail, Phone, MapPin, Bot, Users, Sparkles, ClipboardList, Play, Plus, Minus, Clock, FileCheck2, Award, CalendarClock, Lock, Languages } from 'lucide-react'
-import { loadEnquiries, saveEnquiries, submitToWeb3Forms, type Enquiry } from './lib/api'
+import { submitToWeb3Forms } from './lib/api'
 
 const NAV = [['Workflows', '#/workflows'], ['Product', '#/product'], ['Internships', '#/internships'], ['WebConnect', '#/webconnect'], ['FAQ', '#/faq'], ['Enquire', '#/enquire']]
 const COURSES = ['B.Tech CSE', 'B.Tech AI & ML', 'B.Tech ECE', 'MBA', 'BBA', 'B.Sc Data Science', 'B.Com Honours']
@@ -192,9 +192,8 @@ export const inpCls = (bad?: string) => `h-10 w-full rounded-lg border bg-white 
 export const Lbl = ({ t, err, children }: { t: string; err?: string; children: ReactNode }) => <label className="block"><span className="mb-1.5 block text-xs font-medium text-ink-2">{t}</span>{children}{err && <span role="alert" className="mt-1 block text-xs text-bad-600">{err}</span>}</label>
 
 function Enquire() {
-  const [list, setList] = useState<Enquiry[]>(loadEnquiries); const [f, setF] = useState(empty); const [err, setErr] = useState<Record<string, string>>({})
+  const [f, setF] = useState(empty); const [err, setErr] = useState<Record<string, string>>({})
   const [state, setState] = useState<'idle' | 'sending' | 'ok' | 'fail'>('idle'); const [msg, setMsg] = useState('')
-  useEffect(() => saveEnquiries(list), [list])
   const set = (k: keyof typeof empty, v: string) => { setF(p => ({ ...p, [k]: v })); setErr(p => ({ ...p, [k]: '' })); if (state !== 'sending') setState('idle') }
   const submit = async (e: React.FormEvent) => {
     e.preventDefault(); if (state === 'sending') return
@@ -208,15 +207,15 @@ function Enquire() {
     setState('sending')
     const { botcheck, ...fields } = f
     const r = await submitToWeb3Forms(botcheck ? { ...fields, botcheck } : fields, `New college enquiry: ${f.college.trim()}`)
-    if (r.ok) { setList(l => [{ id: Math.random().toString(36).slice(2), ...fields, college: f.college.trim(), name: f.name.trim(), at: new Date().toISOString() }, ...l]); setF(empty); setState('ok') }
+    if (r.ok) { setF(empty); setState('ok') }
     else { setState('fail'); setMsg(r.message) }
   }
   return (
     <section id="enquire" className="bg-canvas py-24">
       <div className="mx-auto max-w-6xl px-5">
-        <Reveal className="mx-auto max-w-2xl text-center"><Eyebrow>Book a demo</Eyebrow><h2 className="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Tell us about your college</h2><p className="mt-3 text-ink-3">Share your college details and our team will get in touch. Your submission also appears beside the form.</p></Reveal>
-        <div className="mt-10 grid gap-6 lg:grid-cols-5">
-          <form onSubmit={submit} noValidate className="grid gap-4 self-start rounded-2xl border border-line bg-white p-6 shadow-card lg:col-span-3">
+        <Reveal className="mx-auto max-w-2xl text-center"><Eyebrow>Book a demo</Eyebrow><h2 className="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Tell us about your college</h2><p className="mt-3 text-ink-3">Share your college details and our team will get in touch.</p></Reveal>
+        <div className="mx-auto mt-10 max-w-3xl">
+          <form onSubmit={submit} noValidate className="grid gap-4 rounded-2xl border border-line bg-white p-6 shadow-card sm:p-8">
             <input type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" className="hidden" checked={f.botcheck === 'on'} onChange={e => set('botcheck', e.target.checked ? 'on' : '')} />
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="sm:col-span-2"><Lbl t="College / institution name *" err={err.college}><input className={inpCls(err.college)} value={f.college} onChange={e => set('college', e.target.value)} autoComplete="organization" /></Lbl></div>
@@ -234,17 +233,6 @@ function Enquire() {
             {state === 'ok' && <p role="status" className="flex items-center gap-2 rounded-lg bg-ok-50 px-3 py-2 text-sm text-ok-700"><Check size={15} />Thanks! We received your details and will contact you soon.</p>}
             {state === 'fail' && <p role="alert" className="flex items-center gap-2 rounded-lg bg-bad-50 px-3 py-2 text-sm text-bad-700"><AlertCircle size={15} />{msg} Your details are still in the form.</p>}
           </form>
-          <div className="rounded-2xl border border-line bg-white shadow-card lg:col-span-2 lg:self-start">
-            <div className="flex items-center justify-between px-5 pb-4 pt-5"><h3 className="flex items-center gap-2 font-semibold">Submitted details <span className="rounded-full bg-brand-50 px-2 text-xs font-medium text-brand-700">{list.length}</span></h3>{list.length > 0 && <button onClick={() => { if (confirm('Clear the list shown here? (Already-sent enquiries are not affected.)')) setList([]) }} className="text-xs text-ink-3 hover:text-bad-600">Clear</button>}</div>
-            {list.length === 0 ? <div className="flex flex-col items-center border-t border-line px-6 py-14 text-center"><span className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600"><ClipboardList size={20} /></span><p className="font-medium">No submissions yet</p><p className="mt-1 max-w-xs text-sm text-ink-3">Send the form and your details will appear here.</p></div> :
-              <ul className="max-h-[520px] divide-y divide-line-2 overflow-y-auto border-t border-line">{list.map(x => <li key={x.id} className="flex gap-3 px-5 py-4">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-navy-900 text-white"><Building2 size={17} /></span>
-                <div className="min-w-0 flex-1"><p className="font-semibold">{x.college}</p><p className="text-xs text-ink-3">{x.name} · {x.role} · {new Date(x.at).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })}</p>
-                  <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-xs text-ink-2"><span className="flex items-center gap-1"><Mail size={12} />{x.email}</span><span className="flex items-center gap-1"><Phone size={12} />{x.phone}</span>{x.city && <span className="flex items-center gap-1"><MapPin size={12} />{x.city}</span>}{x.website && <span className="flex items-center gap-1"><Globe size={12} />{x.website}</span>}</div>
-                  <p className="mt-1.5 text-xs text-ink-3">Interested in {x.interest}{x.size && ` · ${x.size} students`}{x.message && <> · “{x.message}”</>}</p></div>
-                <button aria-label={`Remove ${x.college} from this list`} onClick={() => setList(l => l.filter(i => i.id !== x.id))} className="h-8 w-8 shrink-0 rounded-lg text-ink-4 hover:bg-bad-50 hover:text-bad-600"><Trash2 size={15} className="mx-auto" /></button></li>)}</ul>}
-            <p className="border-t border-line px-5 py-3 text-xs text-ink-3">Details are emailed to the Admivoice team. This list is stored in your browser only.</p>
-          </div>
         </div>
       </div>
     </section>
@@ -287,7 +275,7 @@ function WebConnect() {
 
 /* ---------- FAQ ---------- */
 function Faq() {
-  const q = [['Does Admivoice place real calls?', 'The live demo uses simulated calls, transcripts and recordings, clearly labelled as such. The platform is designed so real telephony and AI voice providers plug in later.'], ['Where does the AI get its answers?', 'From verified information imported from your own website through WebConnect (courses, fees, eligibility, deadlines). If nothing verified is found, it hands the question to an officer instead of guessing.'], ['Who can see what?', 'Five roles (Super Admin, College Admin, Admission Officer, Internship Coordinator and Read-Only Management) have different permissions. Data is isolated per institution and every key action is audit-logged.'], ['Can we run internships here too?', 'Yes. Internships is a first-class section: publish programmes, manage applicants, schedule interviews, track completion and issue certificates.'], ['What happens to the form I submit?', 'Your college details are emailed to the Admivoice team so we can contact you. A copy is also shown beside the form, stored in your own browser only.']]
+  const q = [['Does Admivoice place real calls?', 'The live demo uses simulated calls, transcripts and recordings, clearly labelled as such. The platform is designed so real telephony and AI voice providers plug in later.'], ['Where does the AI get its answers?', 'From verified information imported from your own website through WebConnect (courses, fees, eligibility, deadlines). If nothing verified is found, it hands the question to an officer instead of guessing.'], ['Who can see what?', 'Five roles (Super Admin, College Admin, Admission Officer, Internship Coordinator and Read-Only Management) have different permissions. Data is isolated per institution and every key action is audit-logged.'], ['Can we run internships here too?', 'Yes. Internships is a first-class section: publish programmes, manage applicants, schedule interviews, track completion and issue certificates.'], ['What happens to the form I submit?', 'Your college details are emailed to the Admivoice team so we can contact you.']]
   return (
     <section id="faq" className="bg-canvas py-24"><div className="mx-auto max-w-3xl px-5">
       <Reveal className="text-center"><Eyebrow>FAQ</Eyebrow><h2 className="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Questions, answered</h2></Reveal>

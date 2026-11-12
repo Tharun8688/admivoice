@@ -1,11 +1,3 @@
-export interface Enquiry {
-  id: string; college: string; name: string; role: string; email: string; phone: string; city: string
-  website: string; size: string; interest: string; message: string; at: string
-}
-const KEY = 'admivoice.enquiries.v2'
-export const loadEnquiries = (): Enquiry[] => { try { return JSON.parse(localStorage.getItem(KEY) || '[]') } catch { return [] } }
-export const saveEnquiries = (e: Enquiry[]) => { try { localStorage.setItem(KEY, JSON.stringify(e)) } catch { /* ignore */ } }
-
 /** Web3Forms public access key (designed to be used client-side). Submissions are emailed to the key owner. */
 const WEB3FORMS_KEY = 'e1a27e4d-2f69-4a8d-b2d0-7f6a3db3febe'
 export async function submitToWeb3Forms(fields: Record<string, string>, subject: string): Promise<{ ok: boolean; message: string }> {
