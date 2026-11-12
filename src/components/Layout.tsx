@@ -8,7 +8,6 @@ import { Avatar, Dropdown, MenuItem, IconButton, Modal, Badge, PageSkeleton, Toa
 import { cn, ago } from '@/lib/utils'
 
 export const NAV = [
-  { to: '/', label: 'Enquiry Form', icon: LayoutDashboard, end: true },
   { to: '/voice', label: 'AI Voice', icon: PhoneCall },
   { to: '/admissions', label: 'Admissions', icon: GraduationCap },
   { to: '/webconnect', label: 'WebConnect', icon: Globe },
@@ -36,7 +35,7 @@ function SidebarBody({ onNav }: { onNav?: () => void }) {
       <div className="px-5 pt-5 pb-6"><Logo light /></div>
       <nav className="flex-1 space-y-0.5 px-3" aria-label="Main">
         {NAV.map(n => (
-          <NavLink key={n.to} to={n.to} end={n.end} onClick={onNav}
+          <NavLink key={n.to} to={n.to} onClick={onNav}
             className={({ isActive }) => cn('group flex items-center gap-3 rounded-lg px-3 py-2 text-[13.5px] font-medium transition-all', isActive ? 'bg-white/10 text-white shadow-[inset_2px_0_0_#818cf8]' : 'hover:bg-white/5 hover:text-white')}>
             <n.icon size={17} className="opacity-80" />{n.label}
             {n.to === '/voice' && <span className="ml-auto flex items-center gap-1 rounded-full bg-emerald-500/15 px-1.5 text-[10px] font-semibold text-emerald-400"><span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />LIVE</span>}

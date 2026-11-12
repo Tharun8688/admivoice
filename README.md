@@ -3,7 +3,7 @@
 AI-powered admissions & internship platform for colleges. React + TypeScript + Vite + Tailwind + Recharts.
 
 - **Landing page** (`/`) — public home: hero, features, how it works, internships, enquiry form with live "Submitted details".
-- **Live demo app** (`/#/login` → sign in with any role) — Enquiry Form, AI Voice, Admissions (table + Kanban), WebConnect, Contacts, Analytics, Internships, Integrations, Settings.
+- **Live demo app** (`/#/login` → sign in with any role) — AI Voice, Admissions (table + Kanban), WebConnect, Contacts, Analytics, Internships, Integrations, Settings.
 
 ```bash
 npm install
