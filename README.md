@@ -11,7 +11,7 @@ npm run build
 ```
 
 ## Modules
-Overview · AI Voice · Admissions (table + Kanban) · WebConnect · Contacts · Analytics · Internships · Integrations · Settings
+Enquiry Form (home) · AI Voice · Admissions (table + Kanban) · WebConnect · Contacts · Analytics · Internships · Integrations · Settings
 
 ## Demo mode — what is and isn't real
 - **Simulated:** AI calls, live transcripts, recordings, website crawling, the chatbot (rule-based over sample data), and integration connections. All are labelled "Demo" in the UI. No calls are placed and no external service is contacted.

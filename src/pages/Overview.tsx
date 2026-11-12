@@ -1,99 +1,68 @@
-import { Link, useNavigate } from 'react-router-dom'
-import { Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis, Legend } from 'recharts'
-import { PhoneCall, Users, CheckCircle2, Clock, UserPlus, TrendingUp, ArrowRight, Plus, Sparkles, Briefcase, Globe } from 'lucide-react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Send, Trash2, Phone, Mail, MapPin, ClipboardList, ArrowRight } from 'lucide-react'
 import { useApp } from '@/lib/store'
-import { metrics, CHART, PALETTE } from '@/lib/metrics'
-import { Avatar, Badge, Button, Card, CardHeader, PageHeader, Stat, Progress } from '@/components/ui'
-import { ago, fmtDur, fmtDateTime } from '@/lib/utils'
-import { SIM_LIVE, useTick } from '@/lib/useSim'
+import type { Lead } from '@/lib/types'
+import { Avatar, Badge, Button, Card, CardHeader, Confirm, Empty, Field, Input, PageHeader, Select, Textarea } from '@/components/ui'
+import { ago, uid } from '@/lib/utils'
 
-const tip = { contentStyle: { borderRadius: 10, border: '1px solid #e6e8f0', fontSize: 12, boxShadow: '0 8px 24px rgba(15,23,42,.1)' } }
-const axis = { tick: { fontSize: 11, fill: CHART.axis }, axisLine: false, tickLine: false } as const
+const COURSES: Record<string, string> = { 'B.Tech CSE': 'Computer Science', 'B.Tech AI & ML': 'Computer Science', 'B.Tech ECE': 'Electronics', 'B.Tech Mechanical': 'Mechanical', MBA: 'Management', BBA: 'Management', 'B.Sc Data Science': 'Sciences', 'B.Com Honours': 'Commerce' }
+const empty = { name: '', phone: '', email: '', city: '', course: 'B.Tech CSE', time: 'Morning', message: '' }
 
-export default function Overview() {
-  const { data, session, can } = useApp(); const m = metrics(data); const nav = useNavigate(); const t = useTick()
-  const newApplicants = data.leads.filter(l => l.stage === 'Application Started').length
-  const hour = new Date().getHours(); const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
-  const callsToday = Math.max(m.today.length, 0) + 118
-  const success = m.total ? Math.round(m.ans / m.total * 100) : 0
-  const live = SIM_LIVE
-  const pieData = [{ name: 'Answered', value: m.ans }, { name: 'Missed', value: m.missed }, { name: 'Failed', value: m.failed }]
+export default function EnquiryForm() {
+  const { data, update, toast, session, can } = useApp(); const nav = useNavigate()
+  const [f, setF] = useState(empty); const [err, setErr] = useState<Record<string, string>>({}); const [del, setDel] = useState<Lead | null>(null)
+  const set = (k: keyof typeof empty, v: string) => { setF({ ...f, [k]: v }); if (err[k]) setErr({ ...err, [k]: '' }) }
+  const subs = data.leads.filter(l => l.source === 'Enquiry Form').sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt))
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault(); const er: Record<string, string> = {}
+    if (!f.name.trim()) er.name = 'Full name is required'
+    if (f.phone.replace(/\D/g, '').length < 10) er.phone = 'Enter a valid 10-digit phone number'
+    if (f.email && !/\S+@\S+\.\S+/.test(f.email)) er.email = 'Enter a valid email'
+    setErr(er); if (Object.keys(er).length) return toast('Please fix the highlighted fields', 'error')
+    const now = new Date().toISOString()
+    const lead: Lead = { id: `L-${uid()}`, name: f.name.trim(), phone: f.phone, email: f.email, course: f.course, dept: COURSES[f.course], stage: 'New Enquiry', source: 'Enquiry Form', officer: 'Ms. Radhika Menon', progress: 0, score: 50, followUp: new Date(Date.now() + 864e5).toISOString(), createdAt: now,
+      docs: ['10th Marksheet', '12th Marksheet', 'Transfer Certificate', 'ID Proof', 'Entrance Scorecard', 'Passport Photo'].map(name => ({ name, status: 'missing' as const })),
+      notes: [{ id: uid(), at: now, by: session?.name ?? 'Form', text: `Enquiry form submitted. City: ${f.city || '—'}. Best time to call: ${f.time}.${f.message ? ` Message: ${f.message}` : ''}`, kind: 'system' }] }
+    update(d => ({ ...d, leads: [lead, ...d.leads] }), { action: 'Enquiry form submitted', target: lead.name }); setF(empty); toast('Form submitted — details added below')
+  }
+  const note = (l: Lead) => l.notes[l.notes.length - 1]?.text ?? ''
   return (
     <div className="space-y-6">
-      <PageHeader title={`${greet}, ${session?.name.split(' ')[0]}`} sub="All admission communication is under control. AI is handling repetitive calling and enquiry workflows."
-        actions={<>{can('internships') && <Button icon={<Briefcase size={15} />} onClick={() => nav('/internships')}>Internships</Button>}
-          {can('calls') && <Button variant="primary" icon={<Plus size={15} />} onClick={() => nav('/voice?new=1')}>New AI call</Button>}</>} />
-
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-6">
-        <Stat label="Admission enquiries" value={data.leads.length * 19 + 36} delta={12.4} icon={<Users size={16} />} />
-        <Stat label="Calls made today" value={callsToday} delta={8.1} icon={<PhoneCall size={16} />} />
-        <Stat label="Successful conversations" value={`${success}%`} delta={3.2} icon={<CheckCircle2 size={16} />} hint={`${m.ans} of ${m.total} calls`} />
-        <Stat label="Pending follow-ups" value={m.pending.length} delta={-5.6} icon={<Clock size={16} />} />
-        <Stat label="New applicants" value={newApplicants + 14} delta={18.9} icon={<UserPlus size={16} />} />
-        <Stat label="Conversion rate" value={`${m.conv}%`} delta={1.8} icon={<TrendingUp size={16} />} />
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
-          <CardHeader title="AI calling activity" sub="Last 14 days — answered, missed and failed calls" action={<Badge tone="brand">Simulated trend</Badge>} />
-          <div className="h-64 px-3 pb-3"><ResponsiveContainer><BarChart data={m.daily} barSize={14}>
-            <CartesianGrid stroke={CHART.grid} vertical={false} /><XAxis dataKey="day" {...axis} interval={1} /><YAxis {...axis} width={30} /><Tooltip {...tip} cursor={{ fill: '#f1f3fa' }} /><Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12 }} />
-            <Bar dataKey="Answered" stackId="a" fill={CHART.brand} /><Bar dataKey="Missed" stackId="a" fill={CHART.warn} /><Bar dataKey="Failed" stackId="a" fill={CHART.bad} radius={[4, 4, 0, 0]} /></BarChart></ResponsiveContainer></div>
+      <PageHeader title="Admission enquiry form" sub="Fill in the student's details. Every submission appears in the list beside the form and in Admissions." />
+      <div className="grid gap-5 lg:grid-cols-5">
+        <Card className="lg:col-span-2 self-start">
+          <CardHeader title="New enquiry" sub="Fields marked * are required" />
+          <form onSubmit={submit} noValidate className="grid gap-4 px-5 pb-5">
+            <Field label="Full name *"><Input value={f.name} onChange={e => set('name', e.target.value)} aria-invalid={!!err.name} className={err.name ? 'border-bad-500' : ''} />{err.name && <span className="mt-1 block text-xs text-bad-600">{err.name}</span>}</Field>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Field label="Phone *"><Input value={f.phone} onChange={e => set('phone', e.target.value)} placeholder="+91 98765 43210" className={err.phone ? 'border-bad-500' : ''} />{err.phone && <span className="mt-1 block text-xs text-bad-600">{err.phone}</span>}</Field>
+              <Field label="Email"><Input type="email" value={f.email} onChange={e => set('email', e.target.value)} className={err.email ? 'border-bad-500' : ''} />{err.email && <span className="mt-1 block text-xs text-bad-600">{err.email}</span>}</Field>
+              <Field label="City"><Input value={f.city} onChange={e => set('city', e.target.value)} /></Field>
+              <Field label="Best time to call"><Select value={f.time} onChange={e => set('time', e.target.value)}>{['Morning', 'Afternoon', 'Evening'].map(t => <option key={t}>{t}</option>)}</Select></Field>
+            </div>
+            <Field label="Course interested in"><Select value={f.course} onChange={e => set('course', e.target.value)}>{Object.keys(COURSES).map(c => <option key={c}>{c}</option>)}</Select></Field>
+            <Field label="Message / questions"><Textarea rows={3} value={f.message} onChange={e => set('message', e.target.value)} placeholder="Anything the admissions team should know…" /></Field>
+            <div className="flex gap-2"><Button type="submit" variant="primary" icon={<Send size={14} />} className="flex-1" disabled={!can('admissions')}>Submit enquiry</Button><Button type="button" onClick={() => { setF(empty); setErr({}) }}>Clear</Button></div>
+            {!can('admissions') && <p className="text-xs text-ink-3">Your role is read-only and cannot submit enquiries.</p>}
+          </form>
         </Card>
-        <Card>
-          <CardHeader title={<span className="flex items-center gap-2">Live AI voice activity <span className="h-2 w-2 rounded-full bg-ok-500 animate-pulseRing" /></span>} sub="Simulated — no real calls placed in demo mode" />
-          <ul className="space-y-1 px-3 pb-3">
-            {live.map(c => <li key={c.id}><Link to="/voice" className="flex items-center gap-3 rounded-xl p-2.5 hover:bg-slate-50">
-              <Avatar name={c.student} /><div className="min-w-0 flex-1"><p className="truncate text-[13px] font-medium">{c.student}</p><p className="truncate text-xs text-ink-3">{c.campaign}</p></div>
-              <div className="text-right"><p className="font-mono text-[13px] tabular-nums text-ok-600">{fmtDur(c.start + t)}</p><div className="flex h-3 items-end justify-end gap-0.5">{[0, 1, 2, 3].map(i => <span key={i} style={{ animationDelay: `${i * 120}ms` }} className="h-3 w-0.5 origin-bottom rounded bg-ok-500 animate-wave" />)}</div></div></Link></li>)}
-          </ul>
-          <div className="border-t border-line px-5 py-3 text-xs text-ink-3">3 active · 12 in queue · AI assistant <span className="font-medium text-ok-600">online</span></div>
-        </Card>
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
-          <CardHeader title="Admission enquiry trends" sub="Enquiries vs applications started, last 30 days" />
-          <div className="h-64 px-3 pb-3"><ResponsiveContainer><AreaChart data={m.trend}>
-            <defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={CHART.brand} stopOpacity={0.25} /><stop offset="100%" stopColor={CHART.brand} stopOpacity={0} /></linearGradient></defs>
-            <CartesianGrid stroke={CHART.grid} vertical={false} /><XAxis dataKey="day" {...axis} interval={4} /><YAxis {...axis} width={30} /><Tooltip {...tip} /><Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12 }} />
-            <Area dataKey="Enquiries" stroke={CHART.brand} strokeWidth={2} fill="url(#g1)" /><Area dataKey="Applications" stroke={CHART.violet} strokeWidth={2} fill="none" /></AreaChart></ResponsiveContainer></div>
-        </Card>
-        <Card>
-          <CardHeader title="Call success vs failure" sub="All recorded calls" />
-          <div className="relative h-52"><ResponsiveContainer><PieChart><Pie data={pieData} dataKey="value" innerRadius={58} outerRadius={80} paddingAngle={3} stroke="none">{pieData.map((_, i) => <Cell key={i} fill={[CHART.brand, CHART.warn, CHART.bad][i]} />)}</Pie><Tooltip {...tip} /></PieChart></ResponsiveContainer>
-            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center"><span className="text-2xl font-semibold">{success}%</span><span className="text-xs text-ink-3">answered</span></div></div>
-          <div className="flex justify-center gap-4 pb-4 text-xs text-ink-2">{pieData.map((p, i) => <span key={p.name} className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full" style={{ background: [CHART.brand, CHART.warn, CHART.bad][i] }} />{p.name} {p.value}</span>)}</div>
+        <Card className="lg:col-span-3">
+          <CardHeader title={<span className="flex items-center gap-2">Submitted details <Badge tone="brand">{subs.length}</Badge></span>} sub="Newest first" action={<Button size="sm" onClick={() => nav('/admissions')} icon={<ArrowRight size={13} />}>Open Admissions</Button>} />
+          {subs.length === 0 ? <Empty icon={<ClipboardList size={20} />} title="No submissions yet" body="Submit the form and the details will appear here instantly." /> :
+            <ul className="divide-y divide-line-2 border-t border-line">{subs.map(l => (
+              <li key={l.id} className="flex gap-3 px-5 py-4 animate-fadeUp">
+                <Avatar name={l.name} size={38} />
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2"><p className="font-semibold">{l.name}</p><Badge tone="brand">{l.course}</Badge><span className="text-xs text-ink-4">{ago(l.createdAt)}</span></div>
+                  <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-ink-2"><span className="flex items-center gap-1"><Phone size={12} />{l.phone}</span>{l.email && <span className="flex items-center gap-1"><Mail size={12} />{l.email}</span>}<span className="flex items-center gap-1"><MapPin size={12} />{(note(l).match(/City: ([^.]*)\./)?.[1]) || '—'}</span></div>
+                  <p className="mt-2 text-[13px] text-ink-3">{note(l).replace(/^Enquiry form submitted\. City: [^.]*\. /, '')}</p>
+                </div>
+                {can('admissions') && <button aria-label={`Delete ${l.name}`} onClick={() => setDel(l)} className="h-8 w-8 shrink-0 rounded-lg text-ink-4 hover:bg-bad-50 hover:text-bad-600"><Trash2 size={15} className="mx-auto" /></button>}
+              </li>))}</ul>}
         </Card>
       </div>
-
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Card>
-          <CardHeader title="Lead conversion funnel" sub="Leads reaching each stage" />
-          <ul className="space-y-2.5 px-5 pb-5">{m.funnel.map((f, i) => <li key={f.stage}><div className="mb-1 flex justify-between text-xs"><span className="text-ink-2">{f.stage}</span><span className="font-medium tabular-nums">{f.count}</span></div>
-            <div className="h-2 rounded-full bg-slate-100"><div className="h-full rounded-full" style={{ width: `${f.count / Math.max(1, m.funnel[0].count) * 100}%`, background: `hsl(${245 + i * 4} ${70 - i * 3}% ${62 - i * 3}%)` }} /></div></li>)}</ul>
-        </Card>
-        <Card>
-          <CardHeader title="Department-wise enquiries" />
-          <div className="h-64 px-3 pb-3"><ResponsiveContainer><BarChart data={m.byDept} layout="vertical" barSize={14} margin={{ left: 20 }}>
-            <XAxis type="number" hide /><YAxis type="category" dataKey="name" {...axis} width={110} /><Tooltip {...tip} cursor={{ fill: '#f1f3fa' }} />
-            <Bar dataKey="value" radius={[0, 6, 6, 0]}>{m.byDept.map((_, i) => <Cell key={i} fill={PALETTE[i % PALETTE.length]} />)}</Bar></BarChart></ResponsiveContainer></div>
-        </Card>
-        <Card>
-          <CardHeader title="Upcoming follow-ups" action={<Link to="/admissions" className="flex items-center gap-1 text-xs font-medium text-brand-600">View all <ArrowRight size={12} /></Link>} />
-          <ul className="px-3 pb-3">{m.pending.slice(0, 5).map(l => <li key={l.id}><Link to={`/admissions?lead=${l.id}`} className="flex items-center gap-3 rounded-xl p-2 hover:bg-slate-50"><Avatar name={l.name} size={30} /><div className="min-w-0 flex-1"><p className="truncate text-[13px] font-medium">{l.name}</p><p className="truncate text-xs text-ink-3">{l.course}</p></div><Badge tone={new Date(l.followUp!) < new Date() ? 'bad' : 'warn'}>{ago(l.followUp!)}</Badge></Link></li>)}</ul>
-        </Card>
-      </div>
-
-      <Card>
-        <CardHeader title="Recent admission enquiries" action={<Link to="/admissions" className="flex items-center gap-1 text-xs font-medium text-brand-600">Open admissions <ArrowRight size={12} /></Link>} />
-        <div className="overflow-x-auto"><table className="w-full text-sm"><thead><tr className="border-y border-line bg-slate-50/70 text-left text-xs text-ink-3"><th className="px-5 py-2.5 font-medium">Student</th><th className="px-4 font-medium">Course</th><th className="px-4 font-medium">Source</th><th className="px-4 font-medium">Stage</th><th className="px-5 text-right font-medium">Received</th></tr></thead>
-          <tbody>{[...data.leads].sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt)).slice(0, 6).map(l => <tr key={l.id} onClick={() => nav(`/admissions?lead=${l.id}`)} className="cursor-pointer border-b border-line-2 last:border-0 hover:bg-slate-50"><td className="px-5 py-3"><span className="flex items-center gap-2.5"><Avatar name={l.name} size={28} /><span className="font-medium">{l.name}</span></span></td><td className="px-4 text-ink-2">{l.course}</td><td className="px-4 text-ink-2">{l.source}</td><td className="px-4"><Badge tone="brand">{l.stage}</Badge></td><td className="px-5 text-right text-xs text-ink-3">{ago(l.createdAt)}</td></tr>)}</tbody></table></div>
-      </Card>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Link to="/webconnect"><Card className="flex items-center gap-4 p-4 transition-shadow hover:shadow-pop"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet2-50 text-violet-600"><Globe size={18} /></span><div className="flex-1"><p className="font-medium">WebConnect knowledge</p><p className="text-xs text-ink-3">{data.knowledge.filter(k => k.status === 'synced').length} of {data.knowledge.length} sources synced · {data.knowledge.some(k => k.status === 'error') ? '1 needs attention' : 'healthy'}</p></div><ArrowRight size={16} className="text-ink-4" /></Card></Link>
-        <Link to="/internships"><Card className="flex items-center gap-4 p-4 transition-shadow hover:shadow-pop"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600"><Sparkles size={18} /></span><div className="flex-1"><p className="font-medium">Internships</p><p className="text-xs text-ink-3">{data.internApps.filter(a => a.stage === 'In Progress').length} active interns · {data.internships.filter(i => i.status === 'open').length} open programmes</p></div><ArrowRight size={16} className="text-ink-4" /></Card></Link>
-      </div>
+      <Confirm open={!!del} danger onClose={() => setDel(null)} title="Delete this submission?" confirmLabel="Delete" body={`${del?.name}'s enquiry will be removed from the list and from Admissions.`} onConfirm={() => { update(d => ({ ...d, leads: d.leads.filter(l => l.id !== del!.id) }), { action: 'Deleted enquiry', target: del!.name }); toast('Submission deleted') }} />
     </div>
   )
 }

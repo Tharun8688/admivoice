@@ -8,7 +8,7 @@ import { Avatar, Dropdown, MenuItem, IconButton, Modal, Badge, PageSkeleton, Toa
 import { cn, ago } from '@/lib/utils'
 
 export const NAV = [
-  { to: '/', label: 'Overview', icon: LayoutDashboard, end: true },
+  { to: '/', label: 'Enquiry Form', icon: LayoutDashboard, end: true },
   { to: '/voice', label: 'AI Voice', icon: PhoneCall },
   { to: '/admissions', label: 'Admissions', icon: GraduationCap },
   { to: '/webconnect', label: 'WebConnect', icon: Globe },
