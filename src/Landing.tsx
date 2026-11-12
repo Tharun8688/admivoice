@@ -115,7 +115,6 @@ const TABS = [
   { id: 'voice', label: 'AI Voice', icon: PhoneCall, title: 'Run calling campaigns on autopilot', pts: ['Individual and bulk admission campaigns', 'Approved scripts, languages, schedules and retries', 'Live transcripts, recordings and outcomes'] },
   { id: 'adm', label: 'Admissions', icon: GraduationCap, title: 'Every applicant, enquiry to enrolment', pts: ['Table and Kanban pipeline views', 'Document verification and follow-ups', 'Officer assignment, notes and history'] },
   { id: 'web', label: 'WebConnect', icon: Globe, title: 'Answers grounded in your website', pts: ['Import courses, fees, eligibility and deadlines', 'Sync status, timestamps and error alerts', 'Escalates when nothing verified is found'] },
-  { id: 'int', label: 'Internships', icon: Briefcase, title: 'A full internship portal included', pts: ['Publish programmes and track applications', 'Interviews, shortlists and coordinators', 'Completion tracking and certificates'] },
 ] as const
 function Mock({ id }: { id: string }) {
   if (id === 'voice') return (
@@ -123,20 +122,16 @@ function Mock({ id }: { id: string }) {
       <div className="rounded-xl border border-line bg-white p-3"><Wave n={48} color="bg-brand-500" /><div className="mt-2 flex justify-between text-xs text-ink-3"><span>Recording</span><span>Interested · 82%</span></div></div></div>)
   if (id === 'adm') return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">{[['Contacted', ['Aarav', 'Meera']], ['Interested', ['Rohan', 'Divya', 'Yash']], ['Docs submitted', ['Sneha']], ['Admitted', ['Arjun', 'Tara']]].map(([c, l]) => <div key={c as string} className="rounded-xl bg-slate-100/80 p-2"><p className="px-1 pb-2 text-xs font-semibold text-ink-2">{c as string}</p><div className="space-y-2">{(l as string[]).map((x, i) => <div key={x} className="rounded-lg border border-line bg-white p-2.5"><p className="text-xs font-medium">{x}</p><div className="mt-2 h-1.5 rounded-full bg-slate-100"><div className="h-full rounded-full bg-brand-600" style={{ width: `${30 + i * 25 + (c === 'Admitted' ? 30 : 0)}%` }} /></div></div>)}</div></div>)}</div>)
-  if (id === 'web') return (
+  return (
     <div className="grid gap-3 sm:grid-cols-2"><div className="space-y-2">{[['Main college website', 'Synced', 'ok'], ['Admissions portal', 'Syncing', 'brand'], ['Prospectus (PDF)', 'Error', 'bad']].map(([n, s, t]) => <div key={n} className="flex items-center justify-between rounded-xl border border-line bg-white p-3"><div className="flex items-center gap-2.5"><Globe size={15} className="text-ink-3" /><span className="text-sm font-medium">{n}</span></div><span className={`rounded-full px-2 py-0.5 text-xs font-medium ${t === 'ok' ? 'bg-ok-50 text-ok-700' : t === 'brand' ? 'bg-brand-50 text-brand-700' : 'bg-bad-50 text-bad-700'}`}>{s}</span></div>)}</div>
       <div className="space-y-2 rounded-xl border border-line bg-white p-3 text-[13px]"><p className="ml-auto w-fit rounded-2xl rounded-br-sm bg-brand-600 px-3 py-1.5 text-white">MBA fees?</p><p className="rounded-2xl rounded-bl-sm bg-slate-100 px-3 py-1.5">MBA: ₹2,40,000 / year.<span className="mt-1 block border-t border-line pt-1 text-[11px] text-ink-3">Source: Main college website · Fee structures</span></p></div></div>)
-  return (
-    <div className="space-y-3"><div className="flex flex-wrap gap-1.5">{['Applied', 'Under Review', 'Shortlisted', 'Interview', 'Selected', 'In Progress', 'Completed'].map((s, i) => <span key={s} className={`rounded-full px-2.5 py-1 text-xs font-medium ${i === 3 ? 'bg-brand-600 text-white' : 'bg-white text-ink-2 border border-line'}`}>{s}</span>)}</div>
-      {[['JavaScript Intern', '2nd/3rd year · 8 weeks · Hybrid', '3/6 filled'], ['Python Intern', '2nd/3rd year · 8 weeks · Remote', '2/5 filled']].map(([t, s, f]) => <div key={t} className="flex items-center justify-between rounded-xl border border-line bg-white p-3"><div><p className="text-sm font-medium">{t}</p><p className="text-xs text-ink-3">{s}</p></div><span className="rounded-full bg-ok-50 px-2 py-0.5 text-xs font-medium text-ok-700">{f}</span></div>)}
-      <div className="flex items-center gap-2 rounded-xl border border-line bg-white p-3 text-sm"><Award size={16} className="text-violet-500" />Certificate issued to <b>Priya</b></div></div>)
 }
 function Product() {
   const [tab, setTab] = useState<typeof TABS[number]['id']>('voice'); const cur = TABS.find(t => t.id === tab)!
   return (
     <section id="product" className="bg-white py-24">
       <div className="mx-auto max-w-6xl px-5">
-        <Reveal className="mx-auto max-w-2xl text-center"><Eyebrow>The platform</Eyebrow><h2 className="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Not a generic CRM. A dedicated admissions OS.</h2><p className="mt-3 text-ink-3">Four connected workspaces that work together, from the first call to the final certificate.</p></Reveal>
+        <Reveal className="mx-auto max-w-2xl text-center"><Eyebrow>The platform</Eyebrow><h2 className="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Not a generic CRM. A dedicated admissions OS.</h2><p className="mt-3 text-ink-3">Three connected workspaces that work together, from the first call to the final enrolment.</p></Reveal>
         <Reveal className="mt-10">
           <div role="tablist" aria-label="Product areas" className="mx-auto flex w-fit max-w-full overflow-x-auto rounded-xl bg-white p-1 shadow-card ring-1 ring-line">{TABS.map(t => <button key={t.id} role="tab" aria-selected={tab === t.id} onClick={() => setTab(t.id)} className={`flex shrink-0 items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${tab === t.id ? 'bg-navy-900 text-white shadow' : 'text-ink-3 hover:text-ink'}`}><t.icon size={15} />{t.label}</button>)}</div>
           <div className="mt-6 grid items-center gap-8 rounded-3xl border border-line bg-white p-6 shadow-card sm:p-8 lg:grid-cols-[1fr_1.25fr]">
@@ -164,7 +159,7 @@ function How() {
 
 /* ---------- roles ---------- */
 function Roles() {
-  const r = [[GraduationCap, 'Admission officers', 'Stop chasing leads by hand. See who to call, what was said, and which documents are pending.', ['AI-handled first-touch calls', 'Follow-up reminders', 'Document verification']], [Users, 'Admissions heads', 'Watch conversion, officer performance and campaign results in one place.', ['Campaign approvals', 'Performance analytics', 'CSV & PDF reports']], [Briefcase, 'Internship coordinators', 'Run the whole internship lifecycle without juggling forms and email threads.', ['Publish & shortlist', 'Interview scheduling', 'Certificates']], [ShieldCheck, 'College management', 'Read-only visibility with audit trails and institution-level data isolation.', ['Read-only access', 'Audit logs', 'Multi-institution']]] as const
+  const r = [[GraduationCap, 'Admission officers', 'Stop chasing leads by hand. See who to call, what was said, and which documents are pending.', ['AI-handled first-touch calls', 'Follow-up reminders', 'Document verification']], [Users, 'Admissions heads', 'Watch conversion, officer performance and campaign results in one place.', ['Campaign approvals', 'Performance analytics', 'CSV & PDF reports']], [Users, 'Counsellors & telecallers', 'Pick up warm leads with the full call context, so no student has to repeat themselves.', ['Call summaries', 'Callback scheduling', 'Lead notes']], [ShieldCheck, 'College management', 'Read-only visibility with audit trails and institution-level data isolation.', ['Read-only access', 'Audit logs', 'Multi-institution']]] as const
   return (
     <section id="roles" className="bg-white py-24"><div className="mx-auto max-w-6xl px-5">
       <Reveal className="mx-auto max-w-2xl text-center"><Eyebrow>Who it's for</Eyebrow><h2 className="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Made for every desk in the admissions office</h2></Reveal>
@@ -185,9 +180,9 @@ function InternshipTeaser() {
 }
 
 const empty = { college: '', name: '', role: 'Admissions officer', email: '', phone: '', city: '', website: '', size: '', interest: 'AI Voice + Admissions', message: '', botcheck: '' }
-const ROLES = ['Admissions officer', 'Principal / Director', 'Internship coordinator', 'Management', 'Other']
+const ROLES = ['Admissions officer', 'Principal / Director', 'Management', 'Other']
 const SIZES = ['', 'Under 500', '500 – 2,000', '2,000 – 10,000', '10,000+']
-const INTERESTS = ['AI Voice + Admissions', 'AI Voice', 'WebConnect', 'Internships', 'Everything']
+const INTERESTS = ['AI Voice + Admissions', 'AI Voice', 'WebConnect', 'Everything']
 export const inpCls = (bad?: string) => `h-10 w-full rounded-lg border bg-white px-3 text-sm placeholder:text-ink-4 hover:border-slate-300 focus:border-brand-500 ${bad ? 'border-bad-500' : 'border-line'}`
 export const Lbl = ({ t, err, children }: { t: string; err?: string; children: ReactNode }) => <label className="block"><span className="mb-1.5 block text-xs font-medium text-ink-2">{t}</span>{children}{err && <span role="alert" className="mt-1 block text-xs text-bad-600">{err}</span>}</label>
 
@@ -275,7 +270,7 @@ function WebConnect() {
 
 /* ---------- FAQ ---------- */
 function Faq() {
-  const q = [['Does Admivoice place real calls?', 'The live demo uses simulated calls, transcripts and recordings, clearly labelled as such. The platform is designed so real telephony and AI voice providers plug in later.'], ['Where does the AI get its answers?', 'From verified information imported from your own website through WebConnect (courses, fees, eligibility, deadlines). If nothing verified is found, it hands the question to an officer instead of guessing.'], ['Who can see what?', 'Five roles (Super Admin, College Admin, Admission Officer, Internship Coordinator and Read-Only Management) have different permissions. Data is isolated per institution and every key action is audit-logged.'], ['Can we run internships here too?', 'Yes. Internships is a first-class section: publish programmes, manage applicants, schedule interviews, track completion and issue certificates.'], ['What happens to the form I submit?', 'Your college details are emailed to the Admivoice team so we can contact you.']]
+  const q = [['Does Admivoice place real calls?', 'The live demo uses simulated calls, transcripts and recordings, clearly labelled as such. The platform is designed so real telephony and AI voice providers plug in later.'], ['Where does the AI get its answers?', 'From verified information imported from your own website through WebConnect (courses, fees, eligibility, deadlines). If nothing verified is found, it hands the question to an officer instead of guessing.'], ['Who can see what?', 'Five roles (Super Admin, College Admin, Admission Officer and Read-Only Management) have different permissions. Data is isolated per institution and every key action is audit-logged.'], ['What happens to the form I submit?', 'Your college details are emailed to the Admivoice team so we can contact you.']]
   return (
     <section id="faq" className="bg-canvas py-24"><div className="mx-auto max-w-3xl px-5">
       <Reveal className="text-center"><Eyebrow>FAQ</Eyebrow><h2 className="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Questions, answered</h2></Reveal>
@@ -307,7 +302,7 @@ function Sticky() {
 
 export function Footer() {
   return (
-    <footer className="bg-navy-950 pb-24 pt-12 text-slate-400 md:pb-10"><div className="mx-auto max-w-6xl px-5"><div className="flex flex-wrap items-start justify-between gap-8"><div className="max-w-xs"><Logo light /><p className="mt-3 text-sm">AI voice platform for admissions, outreach and internships in education.</p></div><nav className="grid grid-cols-2 gap-x-12 gap-y-2 text-sm" aria-label="Footer">{NAV.map(([l, h]) => <a key={h} href={h} className="hover:text-white">{l}</a>)}<a href="#/login" className="hover:text-white">Live demo</a></nav></div>
+    <footer className="bg-navy-950 pb-24 pt-12 text-slate-400 md:pb-10"><div className="mx-auto max-w-6xl px-5"><div className="flex flex-wrap items-start justify-between gap-8"><div className="max-w-xs"><Logo light /><p className="mt-3 text-sm">AI voice platform for admissions, admissions and outreach in education.</p></div><nav className="grid grid-cols-2 gap-x-12 gap-y-2 text-sm" aria-label="Footer">{NAV.map(([l, h]) => <a key={h} href={h} className="hover:text-white">{l}</a>)}<a href="#/login" className="hover:text-white">Live demo</a></nav></div>
         <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs"><p>© 2026 Admivoice. All rights reserved. · Built by <a href="https://dialgrow.com" target="_blank" rel="noopener noreferrer" className="font-semibold text-white underline-offset-4 hover:underline">DialGrow</a></p><p className="flex gap-4"><span>Terms</span><span>Privacy</span><span>Security</span></p></div></div></footer>
   )
 }
