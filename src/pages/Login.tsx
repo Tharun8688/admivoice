@@ -10,7 +10,7 @@ export default function Login() {
   const [email, setEmail] = useState('admin@meridian.edu'); const [pw, setPw] = useState('demo-password'); const [role, setRole] = useState<Role>('college_admin'); const [busy, setBusy] = useState(false)
   const submit = (e: React.FormEvent) => {
     e.preventDefault(); if (!email.includes('@') || pw.length < 6) return toast('Enter a valid email and a password of 6+ characters', 'error')
-    setBusy(true); setTimeout(() => { login({ name: role === 'admission_officer' ? 'Radhika Menon' : role === 'internship_coordinator' ? 'Anitha Rao' : 'Demo Admin', email, role }); toast('Signed in (demo session)') }, 600)
+    setBusy(true); setTimeout(() => { login({ name: role === 'admission_officer' ? 'Radhika' : role === 'internship_coordinator' ? 'Anitha' : 'Demo Admin', email, role }); toast('Signed in (demo session)') }, 600)
   }
   return (
     <div className="grid min-h-screen lg:grid-cols-2">

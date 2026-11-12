@@ -8,7 +8,7 @@ import { cn, ago, download, fmtDate, toCSV, uid } from '@/lib/utils'
 
 const STAGE_TONE: Record<LeadStage, Tone> = { 'New Enquiry': 'slate', Contacted: 'brand', Interested: 'violet', 'Application Started': 'brand', 'Documents Submitted': 'warn', 'Under Review': 'warn', Admitted: 'ok', Enrolled: 'ok' }
 const DOC_ICON = { verified: <FileCheck2 size={15} className="text-ok-600" />, pending: <FileClock size={15} className="text-warn-600" />, rejected: <FileX2 size={15} className="text-bad-600" />, missing: <FileQuestion size={15} className="text-ink-4" /> }
-const OFFICERS = ['Ms. Radhika Menon', 'Mr. Imran Qureshi', 'Ms. Sunita Rao', 'Mr. Dinesh Pillai']
+const OFFICERS = ['Ms. Radhika', 'Mr. Imran', 'Ms. Sunita', 'Mr. Dinesh']
 
 function LeadDrawer({ id, onClose }: { id: string | null; onClose: () => void }) {
   const { data, update, toast, can, session } = useApp(); const lead = data.leads.find(l => l.id === id); const [note, setNote] = useState(''); const edit = can('admissions')

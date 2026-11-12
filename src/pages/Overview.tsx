@@ -21,7 +21,7 @@ export default function EnquiryForm() {
     if (f.email && !/\S+@\S+\.\S+/.test(f.email)) er.email = 'Enter a valid email'
     setErr(er); if (Object.keys(er).length) return toast('Please fix the highlighted fields', 'error')
     const now = new Date().toISOString()
-    const lead: Lead = { id: `L-${uid()}`, name: f.name.trim(), phone: f.phone, email: f.email, course: f.course, dept: COURSES[f.course], stage: 'New Enquiry', source: 'Enquiry Form', officer: 'Ms. Radhika Menon', progress: 0, score: 50, followUp: new Date(Date.now() + 864e5).toISOString(), createdAt: now,
+    const lead: Lead = { id: `L-${uid()}`, name: f.name.trim(), phone: f.phone, email: f.email, course: f.course, dept: COURSES[f.course], stage: 'New Enquiry', source: 'Enquiry Form', officer: 'Ms. Radhika', progress: 0, score: 50, followUp: new Date(Date.now() + 864e5).toISOString(), createdAt: now,
       docs: ['10th Marksheet', '12th Marksheet', 'Transfer Certificate', 'ID Proof', 'Entrance Scorecard', 'Passport Photo'].map(name => ({ name, status: 'missing' as const })),
       notes: [{ id: uid(), at: now, by: session?.name ?? 'Form', text: `Enquiry form submitted. City: ${f.city || '—'}. Best time to call: ${f.time}.${f.message ? ` Message: ${f.message}` : ''}`, kind: 'system' }] }
     update(d => ({ ...d, leads: [lead, ...d.leads] }), { action: 'Enquiry form submitted', target: lead.name }); setF(empty); toast('Form submitted — details added below')

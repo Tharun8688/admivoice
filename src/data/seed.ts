@@ -7,13 +7,12 @@ export const INSTITUTIONS: Institution[] = [
   { id: 'inst-3', name: 'Northfield College of Management', short: 'NCM', city: 'Pune' },
 ]
 function rng(seed: number) { let s = seed; return () => (s = (s * 1664525 + 1013904223) % 4294967296) / 4294967296 }
-const FIRST = ['Aarav','Ananya','Rohan','Priya','Kavya','Arjun','Sneha','Vikram','Ishita','Rahul','Meera','Aditya','Divya','Karthik','Neha','Siddharth','Pooja','Manish','Tanvi','Harsh','Lakshmi','Varun','Shreya','Nikhil','Aisha','Dev','Riya','Sai','Tara','Yash']
-const LAST = ['Sharma','Reddy','Nair','Iyer','Patel','Gupta','Rao','Menon','Kapoor','Verma','Singh','Das','Joshi','Mehta','Naidu','Bose','Pillai','Khan','Desai','Chopra']
+const FIRST = ['Aarav','Ananya','Rohan','Priya','Kavya','Arjun','Sneha','Vikram','Ishita','Rahul','Meera','Aditya','Divya','Karthik','Neha','Siddharth','Pooja','Manish','Tanvi','Harsh','Lakshmi','Varun','Shreya','Nikhil','Aisha','Dev','Riya','Sai','Tara','Yash','Anika','Kabir','Diya','Ishaan','Myra','Reyansh','Saanvi','Vihaan','Navya','Advait','Kiara','Atharv','Pari','Krish','Anvi','Rudra','Zara','Aryan','Ira','Shaurya','Mahika','Aarush','Tisha','Dhruv','Nisha','Veer','Aditi','Lakshya','Sara','Om','Trisha','Kian','Avni','Rishi','Mira','Samar','Jiya','Neil','Ruhi','Parth','Esha','Ayaan','Vanya','Hriday','Naina','Tejas','Ritika','Arnav','Sia','Ved','Anaya','Kunal','Bhavya','Mohit','Charvi','Jay','Disha','Nakul','Ojas','Pranav','Rhea','Tanay','Uma','Vedant','Yamini','Zain','Alia','Bharat','Chaitra','Daksh','Falak','Gauri','Hemant','Indu']
 const DEPTS: Record<string, string[]> = {
   'Computer Science': ['B.Tech CSE','B.Tech AI & ML','M.Tech CSE'], 'Electronics': ['B.Tech ECE','B.Tech EEE'],
   'Management': ['MBA','BBA'], 'Mechanical': ['B.Tech Mechanical'], 'Sciences': ['B.Sc Data Science','B.Sc Physics'], 'Commerce': ['B.Com Honours'],
 }
-const OFFICERS = ['Ms. Radhika Menon','Mr. Imran Qureshi','Ms. Sunita Rao','Mr. Dinesh Pillai']
+const OFFICERS = ['Ms. Radhika','Mr. Imran','Ms. Sunita','Mr. Dinesh']
 const SOURCES = ['Website','AI Voice Inbound','Campaign','Referral','Education Fair','Instagram','Walk-in']
 const CITIES = ['Hyderabad','Chennai','Bengaluru','Vijayawada','Pune','Mumbai','Kochi','Visakhapatnam']
 const DOCS = ['10th Marksheet','12th Marksheet','Transfer Certificate','ID Proof','Entrance Scorecard','Passport Photo']
@@ -40,10 +39,10 @@ export function buildInstitution(idx: number): InstData {
   const leads: Lead[] = Array.from({ length: 64 }, (_, i) => {
     const dept = pick(r, depts); const course = pick(r, DEPTS[dept])
     const stage = LEAD_STAGES[Math.min(7, Math.floor(Math.pow(r(), 1.7) * 8))] as LeadStage
-    const si = LEAD_STAGES.indexOf(stage); const name = `${pick(r, FIRST)} ${pick(r, LAST)}`
+    const si = LEAD_STAGES.indexOf(stage); const name = pick(r, FIRST)
     const docState = (k: number) => si >= 5 ? 'verified' : si === 4 ? (k < 4 ? 'verified' : 'pending') : si === 3 ? (k < 2 ? 'pending' : 'missing') : 'missing'
     return {
-      id: `L-${1000 + i}`, name, phone: `+91 9${Math.floor(r() * 1e9).toString().padStart(9, '0')}`, email: `${name.toLowerCase().replace(' ', '.')}@mail.com`,
+      id: `L-${1000 + i}`, name, phone: `+91 9${Math.floor(r() * 1e9).toString().padStart(9, '0')}`, email: `${name.toLowerCase()}@mail.com`,
       course, dept, stage, source: pick(r, SOURCES), officer: pick(r, OFFICERS), progress: Math.round((si / 7) * 100),
       docs: DOCS.map((d, k) => ({ name: d, status: (r() < 0.06 && si >= 4 ? 'rejected' : docState(k)) as 'verified' })),
       followUp: si < 6 && r() > 0.3 ? iso(Math.round((r() - 0.25) * 96)) : null, createdAt: iso(-Math.round(r() * 24 * 28)),
@@ -72,20 +71,20 @@ export function buildInstitution(idx: number): InstData {
     }
   })
   const internships: Internship[] = [
-    { id: 'I-1', title: 'Admissions Data Analyst Intern', dept: 'Computer Science', duration: '12 weeks', positions: 6, filled: 3, coordinator: 'Dr. Anitha Rao', status: 'open', mode: 'Hybrid', stipend: '₹12,000 / month', deadline: iso(24 * 12), description: 'Work with the admissions team to analyse enquiry funnels and build dashboards.', skills: ['SQL','Python','Dashboards'], certTemplate: 'Standard Completion' },
-    { id: 'I-2', title: 'Campus Communications Intern', dept: 'Management', duration: '8 weeks', positions: 4, filled: 2, coordinator: 'Prof. Rahul Nambiar', status: 'open', mode: 'On-campus', stipend: '₹8,000 / month', deadline: iso(24 * 9), description: 'Create student-facing content, manage social channels and support events.', skills: ['Writing','Design','Social media'], certTemplate: 'Standard Completion' },
-    { id: 'I-3', title: 'Lab Automation Intern', dept: 'Electronics', duration: '16 weeks', positions: 3, filled: 3, coordinator: 'Dr. Meera Krishnan', status: 'closed', mode: 'On-campus', stipend: '₹15,000 / month', deadline: iso(-24 * 5), description: 'Assist with IoT-based lab automation prototypes.', skills: ['Embedded C','IoT','Arduino'], certTemplate: 'Merit Certificate' },
-    { id: 'I-4', title: 'Library Digitisation Intern', dept: 'Sciences', duration: '6 weeks', positions: 5, filled: 1, coordinator: 'Ms. Lata Subramanian', status: 'open', mode: 'Remote', stipend: 'Unpaid · Certificate', deadline: iso(24 * 20), description: 'Digitise and catalogue archival journals.', skills: ['Cataloguing','Attention to detail'], certTemplate: 'Standard Completion' },
-    { id: 'I-5', title: 'Finance Operations Intern', dept: 'Commerce', duration: '10 weeks', positions: 2, filled: 0, coordinator: 'Mr. Ashok Verma', status: 'draft', mode: 'Hybrid', stipend: '₹10,000 / month', deadline: iso(24 * 30), description: 'Support fee reconciliation and reporting.', skills: ['Excel','Tally'], certTemplate: 'Standard Completion' },
+    { id: 'I-1', title: 'JavaScript Intern', dept: 'Computer Science', duration: '8 weeks', positions: 6, filled: 3, coordinator: 'Dr. Anitha', status: 'open', mode: 'Hybrid', stipend: '₹8,000 / month', deadline: iso(24 * 12), description: 'For 2nd-year students. Build interactive pages and small web apps with JavaScript, working alongside the admissions tech team.', skills: ['JavaScript','HTML & CSS','Git'], certTemplate: 'Standard Completion' },
+    { id: 'I-2', title: 'Python Intern', dept: 'Computer Science', duration: '8 weeks', positions: 5, filled: 2, coordinator: 'Dr. Anitha', status: 'open', mode: 'Remote', stipend: '₹8,000 / month', deadline: iso(24 * 14), description: 'For 2nd-year students. Automate reports and analyse enquiry data with Python scripts and notebooks.', skills: ['Python','Data handling','Automation'], certTemplate: 'Standard Completion' },
+    { id: 'I-3', title: 'Student Partner Intern', dept: 'Management', duration: '10 weeks', positions: 8, filled: 4, coordinator: 'Prof. Rahul', status: 'open', mode: 'On-campus', stipend: '₹6,000 / month + certificate', deadline: iso(24 * 9), description: 'For 2nd-year students. Represent the college to prospective students, host campus tours and support admission drives.', skills: ['Communication','Public speaking','Event support'], certTemplate: 'Merit Certificate' },
+    { id: 'I-4', title: 'Library Digitisation Intern', dept: 'Sciences', duration: '6 weeks', positions: 5, filled: 1, coordinator: 'Ms. Lata', status: 'open', mode: 'Remote', stipend: 'Unpaid · Certificate', deadline: iso(24 * 20), description: 'Digitise and catalogue archival journals.', skills: ['Cataloguing','Attention to detail'], certTemplate: 'Standard Completion' },
+    { id: 'I-5', title: 'Finance Operations Intern', dept: 'Commerce', duration: '10 weeks', positions: 2, filled: 0, coordinator: 'Mr. Ashok', status: 'draft', mode: 'Hybrid', stipend: '₹10,000 / month', deadline: iso(24 * 30), description: 'Support fee reconciliation and reporting.', skills: ['Excel','Tally'], certTemplate: 'Standard Completion' },
   ]
   const internApps: InternApp[] = Array.from({ length: 40 }, (_, i) => {
     const stage = INTERN_STAGES[Math.min(6, Math.floor(Math.pow(r(), 1.3) * 7))] as InternStage
-    const name = `${pick(r, FIRST)} ${pick(r, LAST)}`; const si = INTERN_STAGES.indexOf(stage)
-    return { id: `A-${300 + i}`, student: name, email: `${name.toLowerCase().replace(' ', '.')}@mail.com`, college: pick(r, ['Meridian Institute','Sri Venkateswara College','Hindustan Univ.','Christ College','VIT']), internshipId: pick(r, internships.slice(0, 4)).id, stage, cgpa: +(6.5 + r() * 3.3).toFixed(1), interview: si === 3 ? iso(Math.round(r() * 120)) : null, appliedAt: iso(-Math.round(r() * 24 * 20)), coordinator: pick(r, ['Dr. Anitha Rao','Prof. Rahul Nambiar','Dr. Meera Krishnan']), certificate: si === 6 ? (r() < 0.6 ? 'issued' : 'pending') : 'none', hours: si >= 5 ? Math.round(r() * 200) : 0, skills: ['Communication','Excel','Python'].slice(0, 1 + Math.floor(r() * 3)) }
+    const name = pick(r, FIRST); const si = INTERN_STAGES.indexOf(stage)
+    return { id: `A-${300 + i}`, student: name, email: `${name.toLowerCase()}@mail.com`, college: pick(r, ['Meridian Institute','Sri Venkateswara College','Hindustan Univ.','Christ College','VIT']), internshipId: pick(r, internships.slice(0, 4)).id, stage, cgpa: +(6.5 + r() * 3.3).toFixed(1), interview: si === 3 ? iso(Math.round(r() * 120)) : null, appliedAt: iso(-Math.round(r() * 24 * 20)), coordinator: pick(r, ['Dr. Anitha','Prof. Rahul','Dr. Meera']), certificate: si === 6 ? (r() < 0.6 ? 'issued' : 'pending') : 'none', hours: si >= 5 ? Math.round(r() * 200) : 0, skills: ['Communication','Excel','Python'].slice(0, 1 + Math.floor(r() * 3)) }
   })
   const contacts: Contact[] = Array.from({ length: 70 }, (_, i) => {
-    const name = `${pick(r, FIRST)} ${pick(r, LAST)}`; const type = pick(r, ['Student','Parent','Applicant','Existing Student'] as const)
-    return { id: `P-${i}`, name, type, phone: `+91 9${Math.floor(r() * 1e9).toString().padStart(9, '0')}`, email: `${name.toLowerCase().replace(' ', '.')}@mail.com`, tags: [pick(r, ['Scholarship','Hostel','Hot lead','Sports quota','NRI','First-gen']), ...(r() > 0.6 ? ['VIP'] : [])], segment: pick(r, ['B.Tech 2026','MBA 2026','Alumni referrals','Education fair']), city: pick(r, CITIES), lastContact: iso(-Math.round(r() * 24 * 14)), custom: { 'Preferred language': pick(r, ['English','Telugu','Hindi','Tamil']), 'Best time': pick(r, ['Morning','Afternoon','Evening']) }, history: [{ id: `h${i}`, at: iso(-Math.round(r() * 24 * 10)), by: 'AI Assistant', text: pick(r, ['AI call: shared fee structure.', 'WhatsApp: sent application link.', 'Email: brochure delivered.']), kind: 'call' }] }
+    const name = pick(r, FIRST); const type = pick(r, ['Student','Parent','Applicant','Existing Student'] as const)
+    return { id: `P-${i}`, name, type, phone: `+91 9${Math.floor(r() * 1e9).toString().padStart(9, '0')}`, email: `${name.toLowerCase()}@mail.com`, tags: [pick(r, ['Scholarship','Hostel','Hot lead','Sports quota','NRI','First-gen']), ...(r() > 0.6 ? ['VIP'] : [])], segment: pick(r, ['B.Tech 2026','MBA 2026','Alumni referrals','Education fair']), city: pick(r, CITIES), lastContact: iso(-Math.round(r() * 24 * 14)), custom: { 'Preferred language': pick(r, ['English','Telugu','Hindi','Tamil']), 'Best time': pick(r, ['Morning','Afternoon','Evening']) }, history: [{ id: `h${i}`, at: iso(-Math.round(r() * 24 * 10)), by: 'AI Assistant', text: pick(r, ['AI call: shared fee structure.', 'WhatsApp: sent application link.', 'Email: brochure delivered.']), kind: 'call' }] }
   })
   const knowledge: Knowledge[] = [
     { id: 'W-1', label: 'Main college website', url: 'https://www.meridian.edu', kind: 'Website', status: 'synced', lastSync: iso(-3), pages: 142, items: { Courses: 38, 'Fee structures': 24, Eligibility: 38, Deadlines: 12 } },
@@ -107,9 +106,9 @@ export function buildInstitution(idx: number): InstData {
   return {
     leads, calls, campaigns, internships, internApps, contacts, knowledge, integrations,
     audit: [
-      { id: 'au1', at: iso(-1), user: 'Radhika Menon', role: 'admission_officer', action: 'Moved lead', target: leads[0].name + ' → Interested' },
+      { id: 'au1', at: iso(-1), user: 'Radhika', role: 'admission_officer', action: 'Moved lead', target: leads[0].name + ' → Interested' },
       { id: 'au2', at: iso(-5), user: 'Demo Admin', role: 'college_admin', action: 'Approved campaign script', target: 'B.Tech 2026 Early Bird' },
-      { id: 'au3', at: iso(-26), user: 'Anitha Rao', role: 'internship_coordinator', action: 'Scheduled interview', target: internApps[2].student },
+      { id: 'au3', at: iso(-26), user: 'Anitha', role: 'internship_coordinator', action: 'Scheduled interview', target: internApps[2].student },
     ],
     notifications: [
       { id: 'nt1', at: iso(-0.2), title: 'Knowledge source failed', body: 'Prospectus 2026 (PDF) could not be crawled.', read: false, kind: 'warn' },

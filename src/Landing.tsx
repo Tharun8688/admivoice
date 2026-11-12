@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { Waves, BellRing, HeartHandshake, Building2, ArrowUp, PhoneCall, Globe, GraduationCap, Briefcase, BarChart3, ShieldCheck, Menu, X, ArrowRight, Check, Send, Trash2, Mail, Phone, MapPin, Bot, Users, Sparkles, ClipboardList, Play, Plus, Minus, Clock, FileCheck2, Award, CalendarClock, Lock, Languages } from 'lucide-react'
-import { loadEnquiries, saveEnquiries, type Enquiry } from './lib/api'
+import { Waves, Code2, Terminal, Megaphone, Link2, RefreshCw, Loader2, AlertCircle, BellRing, HeartHandshake, Building2, ArrowUp, PhoneCall, Globe, GraduationCap, Briefcase, BarChart3, ShieldCheck, Menu, X, ArrowRight, Check, Send, Trash2, Mail, Phone, MapPin, Bot, Users, Sparkles, ClipboardList, Play, Plus, Minus, Clock, FileCheck2, Award, CalendarClock, Lock, Languages } from 'lucide-react'
+import { loadEnquiries, saveEnquiries, submitToWeb3Forms, type Enquiry } from './lib/api'
 
-const NAV = [['Workflows', '#workflows'], ['Product', '#product'], ['How it works', '#how'], ['Who it\'s for', '#roles'], ['FAQ', '#faq'], ['Enquire', '#enquire']]
+const NAV = [['Workflows', '#workflows'], ['Product', '#product'], ['Internships', '#internships'], ['WebConnect', '#webconnect'], ['FAQ', '#faq'], ['Enquire', '#enquire']]
 const COURSES = ['B.Tech CSE', 'B.Tech AI & ML', 'B.Tech ECE', 'MBA', 'BBA', 'B.Sc Data Science', 'B.Com Honours']
 
 /* ---------- helpers ---------- */
@@ -70,7 +70,7 @@ function Hero() {
         <div className="relative animate-fadeUp [animation-delay:120ms]" aria-hidden>
           <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-brand-500/20 to-violet2-500/10 blur-2xl" />
           <div className="relative rounded-2xl border border-white/10 bg-white/[0.07] p-5 shadow-2xl backdrop-blur">
-            <div className="flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-300"><PhoneCall size={18} /></span><div className="flex-1"><p className="text-sm font-medium">Ananya Reddy · B.Tech CSE</p><p className="text-xs text-slate-400">B.Tech 2026 Early Bird · English</p></div><span className="flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2 py-0.5 text-[11px] font-medium text-emerald-300"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />LIVE</span></div>
+            <div className="flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-300"><PhoneCall size={18} /></span><div className="flex-1"><p className="text-sm font-medium">Ananya · B.Tech CSE</p><p className="text-xs text-slate-400">B.Tech 2026 Early Bird · English</p></div><span className="flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2 py-0.5 text-[11px] font-medium text-emerald-300"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />LIVE</span></div>
             <div className="mt-4"><Wave n={44} /></div>
             <div className="mt-4 space-y-2.5 text-[13px]">
               <p className="max-w-[88%] rounded-2xl rounded-tl-sm bg-white/10 px-3 py-2"><Bot size={12} className="mr-1 inline" />Eligibility is 60% in 12th with Maths. Applications close 30 June.</p>
@@ -118,17 +118,17 @@ const TABS = [
 ] as const
 function Mock({ id }: { id: string }) {
   if (id === 'voice') return (
-    <div className="space-y-3">{[['Ananya Reddy', '1:42', true], ['Rohan Patel', '0:58', true], ['Kavya Nair', '3:05', false]].map(([n, t, l]) => <div key={n as string} className="flex items-center gap-3 rounded-xl border border-line bg-white p-3"><span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-xs font-semibold text-brand-700">{(n as string).split(' ').map(w => w[0]).join('')}</span><div className="flex-1"><p className="text-sm font-medium">{n}</p><p className="text-xs text-ink-3">{l ? 'Speaking with AI assistant' : 'Callback scheduled · 6 PM'}</p></div>{l ? <span className="flex items-center gap-1.5 rounded-full bg-ok-50 px-2 py-0.5 text-xs font-medium text-ok-700"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-ok-500" />{t}</span> : <span className="rounded-full bg-warn-50 px-2 py-0.5 text-xs font-medium text-warn-700">Scheduled</span>}</div>)}
+    <div className="space-y-3">{[['Ananya', '1:42', true], ['Rohan', '0:58', true], ['Kavya', '3:05', false]].map(([n, t, l]) => <div key={n as string} className="flex items-center gap-3 rounded-xl border border-line bg-white p-3"><span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-xs font-semibold text-brand-700">{(n as string).split(' ').map(w => w[0]).join('')}</span><div className="flex-1"><p className="text-sm font-medium">{n}</p><p className="text-xs text-ink-3">{l ? 'Speaking with AI assistant' : 'Callback scheduled · 6 PM'}</p></div>{l ? <span className="flex items-center gap-1.5 rounded-full bg-ok-50 px-2 py-0.5 text-xs font-medium text-ok-700"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-ok-500" />{t}</span> : <span className="rounded-full bg-warn-50 px-2 py-0.5 text-xs font-medium text-warn-700">Scheduled</span>}</div>)}
       <div className="rounded-xl border border-line bg-white p-3"><Wave n={48} color="bg-brand-500" /><div className="mt-2 flex justify-between text-xs text-ink-3"><span>Recording</span><span>Interested · 82%</span></div></div></div>)
   if (id === 'adm') return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">{[['Contacted', ['Aarav S.', 'Meera N.']], ['Interested', ['Rohan K.', 'Divya R.', 'Yash P.']], ['Docs submitted', ['Sneha I.']], ['Admitted', ['Arjun M.', 'Tara D.']]].map(([c, l]) => <div key={c as string} className="rounded-xl bg-slate-100/80 p-2"><p className="px-1 pb-2 text-xs font-semibold text-ink-2">{c as string}</p><div className="space-y-2">{(l as string[]).map((x, i) => <div key={x} className="rounded-lg border border-line bg-white p-2.5"><p className="text-xs font-medium">{x}</p><div className="mt-2 h-1.5 rounded-full bg-slate-100"><div className="h-full rounded-full bg-brand-600" style={{ width: `${30 + i * 25 + (c === 'Admitted' ? 30 : 0)}%` }} /></div></div>)}</div></div>)}</div>)
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">{[['Contacted', ['Aarav', 'Meera']], ['Interested', ['Rohan', 'Divya', 'Yash']], ['Docs submitted', ['Sneha']], ['Admitted', ['Arjun', 'Tara']]].map(([c, l]) => <div key={c as string} className="rounded-xl bg-slate-100/80 p-2"><p className="px-1 pb-2 text-xs font-semibold text-ink-2">{c as string}</p><div className="space-y-2">{(l as string[]).map((x, i) => <div key={x} className="rounded-lg border border-line bg-white p-2.5"><p className="text-xs font-medium">{x}</p><div className="mt-2 h-1.5 rounded-full bg-slate-100"><div className="h-full rounded-full bg-brand-600" style={{ width: `${30 + i * 25 + (c === 'Admitted' ? 30 : 0)}%` }} /></div></div>)}</div></div>)}</div>)
   if (id === 'web') return (
     <div className="grid gap-3 sm:grid-cols-2"><div className="space-y-2">{[['Main college website', 'Synced', 'ok'], ['Admissions portal', 'Syncing', 'brand'], ['Prospectus (PDF)', 'Error', 'bad']].map(([n, s, t]) => <div key={n} className="flex items-center justify-between rounded-xl border border-line bg-white p-3"><div className="flex items-center gap-2.5"><Globe size={15} className="text-ink-3" /><span className="text-sm font-medium">{n}</span></div><span className={`rounded-full px-2 py-0.5 text-xs font-medium ${t === 'ok' ? 'bg-ok-50 text-ok-700' : t === 'brand' ? 'bg-brand-50 text-brand-700' : 'bg-bad-50 text-bad-700'}`}>{s}</span></div>)}</div>
       <div className="space-y-2 rounded-xl border border-line bg-white p-3 text-[13px]"><p className="ml-auto w-fit rounded-2xl rounded-br-sm bg-brand-600 px-3 py-1.5 text-white">MBA fees?</p><p className="rounded-2xl rounded-bl-sm bg-slate-100 px-3 py-1.5">MBA: ₹2,40,000 / year.<span className="mt-1 block border-t border-line pt-1 text-[11px] text-ink-3">Source: Main college website · Fee structures</span></p></div></div>)
   return (
     <div className="space-y-3"><div className="flex flex-wrap gap-1.5">{['Applied', 'Under Review', 'Shortlisted', 'Interview', 'Selected', 'In Progress', 'Completed'].map((s, i) => <span key={s} className={`rounded-full px-2.5 py-1 text-xs font-medium ${i === 3 ? 'bg-brand-600 text-white' : 'bg-white text-ink-2 border border-line'}`}>{s}</span>)}</div>
-      {[['Admissions Data Analyst Intern', '12 weeks · Hybrid', '3/6 filled'], ['Campus Communications Intern', '8 weeks · On-campus', '2/4 filled']].map(([t, s, f]) => <div key={t} className="flex items-center justify-between rounded-xl border border-line bg-white p-3"><div><p className="text-sm font-medium">{t}</p><p className="text-xs text-ink-3">{s}</p></div><span className="rounded-full bg-ok-50 px-2 py-0.5 text-xs font-medium text-ok-700">{f}</span></div>)}
-      <div className="flex items-center gap-2 rounded-xl border border-line bg-white p-3 text-sm"><Award size={16} className="text-violet-500" />Certificate issued to <b>Priya Nair</b></div></div>)
+      {[['JavaScript Intern', '2nd year · 8 weeks · Hybrid', '3/6 filled'], ['Python Intern', '2nd year · 8 weeks · Remote', '2/5 filled']].map(([t, s, f]) => <div key={t} className="flex items-center justify-between rounded-xl border border-line bg-white p-3"><div><p className="text-sm font-medium">{t}</p><p className="text-xs text-ink-3">{s}</p></div><span className="rounded-full bg-ok-50 px-2 py-0.5 text-xs font-medium text-ok-700">{f}</span></div>)}
+      <div className="flex items-center gap-2 rounded-xl border border-line bg-white p-3 text-sm"><Award size={16} className="text-violet-500" />Certificate issued to <b>Priya</b></div></div>)
 }
 function Product() {
   const [tab, setTab] = useState<typeof TABS[number]['id']>('voice'); const cur = TABS.find(t => t.id === tab)!
@@ -173,62 +173,89 @@ function Roles() {
 }
 
 /* ---------- internships band ---------- */
+const ROLES_INT = [
+  [Code2, 'JavaScript Intern', 'Build interactive pages and small web apps with the admissions tech team.', ['JavaScript', 'HTML & CSS', 'Git'], '8 weeks · Hybrid', '3 spots left'],
+  [Terminal, 'Python Intern', 'Automate reports and analyse enquiry data with Python scripts and notebooks.', ['Python', 'Data handling', 'Automation'], '8 weeks · Remote', '3 spots left'],
+  [Megaphone, 'Student Partner Intern', 'Represent the college to prospective students, host campus tours and support admission drives.', ['Communication', 'Public speaking', 'Events'], '10 weeks · On-campus', '4 spots left'],
+] as const
 function Internships() {
   return (
     <section id="internships" className="relative overflow-hidden bg-navy-900 py-24 text-white">
-      <div className="absolute -right-20 top-10 h-80 w-80 rounded-full bg-violet2-500/20 blur-3xl" />
-      <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 lg:grid-cols-2">
-        <Reveal><Eyebrow light>Internships</Eyebrow><h2 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">An internship portal that ships with it</h2><p className="mt-3 text-slate-300">Publish opportunities, manage applications and track interns through to certification, inside the same platform.</p>
-          <ul className="mt-6 space-y-3 text-sm">{[[FileCheck2, 'Publish programmes and open positions'], [Users, 'Applied → Under Review → Shortlisted → Interview → Selected'], [CalendarClock, 'Assign coordinators and schedule interviews'], [Award, 'Track completion and issue certificates']].map(([I, t]) => { const Ic = I as typeof Award; return <li key={t as string} className="flex items-start gap-3"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white/10"><Ic size={14} className="text-violet-300" /></span><span className="pt-0.5">{t as string}</span></li> })}</ul></Reveal>
-        <Reveal delay={100}><div className="space-y-3">{[['Admissions Data Analyst Intern', 'Computer Science · 12 weeks · Hybrid', '3 spots left'], ['Campus Communications Intern', 'Management · 8 weeks · On-campus', '2 spots left'], ['Library Digitisation Intern', 'Sciences · 6 weeks · Remote', '4 spots left']].map(([t, s, b]) => <div key={t} className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur transition-colors hover:bg-white/[0.08]"><div><p className="font-medium">{t}</p><p className="flex items-center gap-1.5 text-xs text-slate-400"><Clock size={11} />{s}</p></div><span className="shrink-0 rounded-full bg-emerald-500/15 px-2.5 py-1 text-xs font-medium text-emerald-300">{b}</span></div>)}<p className="text-xs text-slate-500">Sample listings shown for illustration.</p></div></Reveal>
+      <div className="absolute -right-20 top-10 h-80 w-80 rounded-full bg-violet2-500/20 blur-3xl" /><div className="absolute -left-20 bottom-0 h-72 w-72 rounded-full bg-brand-600/20 blur-3xl" />
+      <div className="relative mx-auto max-w-6xl px-5">
+        <Reveal className="mx-auto max-w-2xl text-center"><Eyebrow light>Internships · for 2nd-year students</Eyebrow><h2 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Real roles for second-year students</h2><p className="mt-3 text-slate-300">Admivoice ships with a complete internship portal: publish roles, review applicants, schedule interviews and issue certificates.</p></Reveal>
+        <div className="mt-12 grid gap-5 md:grid-cols-3">{ROLES_INT.map(([I, t, d, sk, meta, spots], i) => <Reveal key={t} delay={i * 80}><article className="flex h-full flex-col rounded-2xl border border-white/10 bg-white/[0.06] p-6 backdrop-blur transition-all hover:-translate-y-1 hover:bg-white/[0.09]">
+          <div className="flex items-start justify-between"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-violet2-500 shadow-lg"><I size={20} /></span><span className="rounded-full bg-emerald-500/15 px-2.5 py-1 text-xs font-medium text-emerald-300">{spots}</span></div>
+          <h3 className="mt-5 text-lg font-semibold">{t}</h3><p className="mt-2 flex-1 text-sm leading-relaxed text-slate-300">{d}</p>
+          <ul className="mt-4 flex flex-wrap gap-1.5">{sk.map(x => <li key={x} className="rounded-full bg-white/10 px-2.5 py-1 text-xs text-slate-200">{x}</li>)}</ul>
+          <p className="mt-4 flex items-center gap-2 border-t border-white/10 pt-4 text-xs text-slate-400"><Clock size={12} />{meta}<span className="ml-auto rounded bg-violet2-500/20 px-1.5 py-0.5 font-medium text-violet-200">2nd year</span></p></article></Reveal>)}</div>
+        <Reveal className="mt-10"><div className="mx-auto grid max-w-3xl gap-3 sm:grid-cols-4">{[[FileCheck2, 'Publish roles'], [Users, 'Review applicants'], [CalendarClock, 'Schedule interviews'], [Award, 'Issue certificates']].map(([I, t]) => { const Ic = I as typeof Award; return <div key={t as string} className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm"><Ic size={15} className="text-violet-300" />{t as string}</div> })}</div>
+          <div className="mt-6 text-center"><a href="#/login" className="inline-flex h-11 items-center gap-2 rounded-xl bg-white px-5 text-sm font-medium text-navy-900 hover:bg-slate-100">See the internship portal in the demo <ArrowRight size={15} /></a><p className="mt-3 text-xs text-slate-500">Roles shown are sample listings.</p></div></Reveal>
       </div>
     </section>
   )
 }
 
-const empty = { name: '', phone: '', email: '', city: '', course: COURSES[0], time: 'Morning', message: '' }
+const empty = { college: '', name: '', role: 'Admissions officer', email: '', phone: '', city: '', website: '', size: '', interest: 'AI Voice + Admissions', message: '', botcheck: '' }
+const ROLES = ['Admissions officer', 'Principal / Director', 'Internship coordinator', 'Management', 'Other']
+const SIZES = ['', 'Under 500', '500 – 2,000', '2,000 – 10,000', '10,000+']
+const INTERESTS = ['AI Voice + Admissions', 'AI Voice', 'WebConnect', 'Internships', 'Everything']
+const inpCls = (bad?: string) => `h-10 w-full rounded-lg border bg-white px-3 text-sm placeholder:text-ink-4 hover:border-slate-300 focus:border-brand-500 ${bad ? 'border-bad-500' : 'border-line'}`
+const Lbl = ({ t, err, children }: { t: string; err?: string; children: ReactNode }) => <label className="block"><span className="mb-1.5 block text-xs font-medium text-ink-2">{t}</span>{children}{err && <span role="alert" className="mt-1 block text-xs text-bad-600">{err}</span>}</label>
+
 function Enquire() {
-  const [list, setList] = useState<Enquiry[]>(loadEnquiries); const [f, setF] = useState(empty); const [err, setErr] = useState<Record<string, string>>({}); const [ok, setOk] = useState(false)
+  const [list, setList] = useState<Enquiry[]>(loadEnquiries); const [f, setF] = useState(empty); const [err, setErr] = useState<Record<string, string>>({})
+  const [state, setState] = useState<'idle' | 'sending' | 'ok' | 'fail'>('idle'); const [msg, setMsg] = useState('')
   useEffect(() => saveEnquiries(list), [list])
-  const set = (k: keyof typeof empty, v: string) => { setF(p => ({ ...p, [k]: v })); setErr(p => ({ ...p, [k]: '' })); setOk(false) }
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault(); const er: Record<string, string> = {}
-    if (!f.name.trim()) er.name = 'Full name is required'
+  const set = (k: keyof typeof empty, v: string) => { setF(p => ({ ...p, [k]: v })); setErr(p => ({ ...p, [k]: '' })); if (state !== 'sending') setState('idle') }
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault(); if (state === 'sending') return
+    const er: Record<string, string> = {}
+    if (!f.college.trim()) er.college = 'College name is required'
+    if (!f.name.trim()) er.name = 'Your name is required'
+    if (!/\S+@\S+\.\S+/.test(f.email)) er.email = 'Enter a valid work email'
     if (f.phone.replace(/\D/g, '').length < 10) er.phone = 'Enter a valid 10-digit phone number'
-    if (f.email && !/\S+@\S+\.\S+/.test(f.email)) er.email = 'Enter a valid email'
+    if (f.website && !/^(https?:\/\/)?[\w.-]+\.[a-z]{2,}/i.test(f.website.trim())) er.website = 'Enter a valid website, e.g. www.college.edu'
     setErr(er); if (Object.keys(er).length) return
-    setList(l => [{ id: Math.random().toString(36).slice(2), ...f, name: f.name.trim(), at: new Date().toISOString() }, ...l]); setF(empty); setOk(true)
+    setState('sending')
+    const { botcheck, ...fields } = f
+    const r = await submitToWeb3Forms(botcheck ? { ...fields, botcheck } : fields, `New college enquiry: ${f.college.trim()}`)
+    if (r.ok) { setList(l => [{ id: Math.random().toString(36).slice(2), ...fields, college: f.college.trim(), name: f.name.trim(), at: new Date().toISOString() }, ...l]); setF(empty); setState('ok') }
+    else { setState('fail'); setMsg(r.message) }
   }
-  const inp = (k: string) => `h-10 w-full rounded-lg border bg-white px-3 text-sm placeholder:text-ink-4 hover:border-slate-300 focus:border-brand-500 ${err[k] ? 'border-bad-500' : 'border-line'}`
-  const L = ({ t, k, children }: { t: string; k?: string; children: React.ReactNode }) => <label className="block"><span className="mb-1.5 block text-xs font-medium text-ink-2">{t}</span>{children}{k && err[k] && <span role="alert" className="mt-1 block text-xs text-bad-600">{err[k]}</span>}</label>
   return (
-    <section id="enquire" className="bg-canvas py-20">
+    <section id="enquire" className="bg-canvas py-24">
       <div className="mx-auto max-w-6xl px-5">
-        <div className="mx-auto max-w-2xl text-center"><p className="text-sm font-semibold text-brand-600">Book a demo</p><h2 className="mt-2 text-3xl font-semibold tracking-tight text-ink">Talk to our team</h2><p className="mt-3 text-ink-3">Share a few details and we'll reach out. Your submitted details appear right beside the form.</p></div>
+        <Reveal className="mx-auto max-w-2xl text-center"><Eyebrow>Book a demo</Eyebrow><h2 className="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Tell us about your college</h2><p className="mt-3 text-ink-3">Share your college details and our team will get in touch. Your submission also appears beside the form.</p></Reveal>
         <div className="mt-10 grid gap-6 lg:grid-cols-5">
-          <form onSubmit={submit} noValidate className="grid gap-4 self-start rounded-2xl border border-line bg-white p-6 shadow-card lg:col-span-2">
-            <L t="Full name *" k="name"><input className={inp('name')} value={f.name} onChange={e => set('name', e.target.value)} autoComplete="name" /></L>
+          <form onSubmit={submit} noValidate className="grid gap-4 self-start rounded-2xl border border-line bg-white p-6 shadow-card lg:col-span-3">
+            <input type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" className="hidden" checked={f.botcheck === 'on'} onChange={e => set('botcheck', e.target.checked ? 'on' : '')} />
             <div className="grid gap-4 sm:grid-cols-2">
-              <L t="Phone *" k="phone"><input className={inp('phone')} value={f.phone} onChange={e => set('phone', e.target.value)} placeholder="+91 98765 43210" autoComplete="tel" /></L>
-              <L t="Email" k="email"><input type="email" className={inp('email')} value={f.email} onChange={e => set('email', e.target.value)} autoComplete="email" /></L>
-              <L t="City"><input className={inp('city')} value={f.city} onChange={e => set('city', e.target.value)} /></L>
-              <L t="Best time to call"><select className={inp('time')} value={f.time} onChange={e => set('time', e.target.value)}>{['Morning', 'Afternoon', 'Evening'].map(t => <option key={t}>{t}</option>)}</select></L>
+              <div className="sm:col-span-2"><Lbl t="College / institution name *" err={err.college}><input className={inpCls(err.college)} value={f.college} onChange={e => set('college', e.target.value)} autoComplete="organization" /></Lbl></div>
+              <Lbl t="Your name *" err={err.name}><input className={inpCls(err.name)} value={f.name} onChange={e => set('name', e.target.value)} autoComplete="name" /></Lbl>
+              <Lbl t="Your role"><select className={inpCls()} value={f.role} onChange={e => set('role', e.target.value)}>{ROLES.map(r => <option key={r}>{r}</option>)}</select></Lbl>
+              <Lbl t="Work email *" err={err.email}><input type="email" className={inpCls(err.email)} value={f.email} onChange={e => set('email', e.target.value)} autoComplete="email" /></Lbl>
+              <Lbl t="Phone *" err={err.phone}><input className={inpCls(err.phone)} value={f.phone} onChange={e => set('phone', e.target.value)} placeholder="+91 98765 43210" autoComplete="tel" /></Lbl>
+              <Lbl t="City"><input className={inpCls()} value={f.city} onChange={e => set('city', e.target.value)} autoComplete="address-level2" /></Lbl>
+              <Lbl t="College website" err={err.website}><input className={inpCls(err.website)} value={f.website} onChange={e => set('website', e.target.value)} placeholder="www.yourcollege.edu" autoComplete="url" /></Lbl>
+              <Lbl t="Students / applicants per year"><select className={inpCls()} value={f.size} onChange={e => set('size', e.target.value)}>{SIZES.map(r => <option key={r} value={r}>{r || 'Select…'}</option>)}</select></Lbl>
+              <Lbl t="Interested in"><select className={inpCls()} value={f.interest} onChange={e => set('interest', e.target.value)}>{INTERESTS.map(r => <option key={r}>{r}</option>)}</select></Lbl>
+              <div className="sm:col-span-2"><Lbl t="Message"><textarea rows={3} className={`${inpCls()} h-auto py-2`} value={f.message} onChange={e => set('message', e.target.value)} placeholder="What would you like to automate?" /></Lbl></div>
             </div>
-            <L t="Course interested in"><select className={inp('course')} value={f.course} onChange={e => set('course', e.target.value)}>{COURSES.map(c => <option key={c}>{c}</option>)}</select></L>
-            <L t="Message / questions"><textarea rows={3} className={`${inp('message')} h-auto py-2`} value={f.message} onChange={e => set('message', e.target.value)} /></L>
-            <button className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-brand-600 font-medium text-white transition-all hover:bg-brand-700 active:scale-[.98]"><Send size={15} />Book a demo</button>
-            {ok && <p role="status" className="flex items-center gap-2 rounded-lg bg-ok-50 px-3 py-2 text-sm text-ok-700"><Check size={15} />Submitted. Your details are shown on the right.</p>}
+            <button disabled={state === 'sending'} className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-brand-600 font-medium text-white transition-all hover:bg-brand-700 active:scale-[.98] disabled:opacity-60">{state === 'sending' ? <><Loader2 size={15} className="animate-spin" />Sending…</> : <><Send size={15} />Book a demo</>}</button>
+            {state === 'ok' && <p role="status" className="flex items-center gap-2 rounded-lg bg-ok-50 px-3 py-2 text-sm text-ok-700"><Check size={15} />Thanks! We received your details and will contact you soon.</p>}
+            {state === 'fail' && <p role="alert" className="flex items-center gap-2 rounded-lg bg-bad-50 px-3 py-2 text-sm text-bad-700"><AlertCircle size={15} />{msg} Your details are still in the form.</p>}
           </form>
-          <div className="rounded-2xl border border-line bg-white shadow-card lg:col-span-3">
-            <div className="flex items-center justify-between px-6 pt-5 pb-4"><h3 className="flex items-center gap-2 font-semibold">Submitted details <span className="rounded-full bg-brand-50 px-2 text-xs font-medium text-brand-700">{list.length}</span></h3>{list.length > 0 && <button onClick={() => { if (confirm('Clear all submissions?')) setList([]) }} className="text-xs text-ink-3 hover:text-bad-600">Clear all</button>}</div>
-            {list.length === 0 ? <div className="flex flex-col items-center border-t border-line px-6 py-16 text-center"><span className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600"><ClipboardList size={20} /></span><p className="font-medium">No submissions yet</p><p className="mt-1 max-w-xs text-sm text-ink-3">Submit the form and the details will appear here instantly.</p></div> :
-              <ul className="divide-y divide-line-2 border-t border-line">{list.map(x => <li key={x.id} className="flex gap-3 px-6 py-4">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-semibold text-brand-700">{x.name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()}</span>
-                <div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><p className="font-semibold">{x.name}</p><span className="rounded-full bg-brand-50 px-2 py-0.5 text-xs font-medium text-brand-700">{x.course}</span><span className="text-xs text-ink-4">{new Date(x.at).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })}</span></div>
-                  <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-ink-2"><span className="flex items-center gap-1"><Phone size={12} />{x.phone}</span>{x.email && <span className="flex items-center gap-1"><Mail size={12} />{x.email}</span>}{x.city && <span className="flex items-center gap-1"><MapPin size={12} />{x.city}</span>}</div>
-                  <p className="mt-1.5 text-[13px] text-ink-3">Best time to call: {x.time}{x.message && <> · “{x.message}”</>}</p></div>
-                <button aria-label={`Delete ${x.name}`} onClick={() => setList(l => l.filter(i => i.id !== x.id))} className="h-8 w-8 shrink-0 rounded-lg text-ink-4 hover:bg-bad-50 hover:text-bad-600"><Trash2 size={15} className="mx-auto" /></button></li>)}</ul>}
-            <p className="border-t border-line px-6 py-3 text-xs text-ink-3">Demo: submissions are saved in this browser only. No data is sent to a server.</p>
+          <div className="rounded-2xl border border-line bg-white shadow-card lg:col-span-2 lg:self-start">
+            <div className="flex items-center justify-between px-5 pb-4 pt-5"><h3 className="flex items-center gap-2 font-semibold">Submitted details <span className="rounded-full bg-brand-50 px-2 text-xs font-medium text-brand-700">{list.length}</span></h3>{list.length > 0 && <button onClick={() => { if (confirm('Clear the list shown here? (Already-sent enquiries are not affected.)')) setList([]) }} className="text-xs text-ink-3 hover:text-bad-600">Clear</button>}</div>
+            {list.length === 0 ? <div className="flex flex-col items-center border-t border-line px-6 py-14 text-center"><span className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600"><ClipboardList size={20} /></span><p className="font-medium">No submissions yet</p><p className="mt-1 max-w-xs text-sm text-ink-3">Send the form and your details will appear here.</p></div> :
+              <ul className="max-h-[520px] divide-y divide-line-2 overflow-y-auto border-t border-line">{list.map(x => <li key={x.id} className="flex gap-3 px-5 py-4">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-navy-900 text-white"><Building2 size={17} /></span>
+                <div className="min-w-0 flex-1"><p className="font-semibold">{x.college}</p><p className="text-xs text-ink-3">{x.name} · {x.role} · {new Date(x.at).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })}</p>
+                  <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-xs text-ink-2"><span className="flex items-center gap-1"><Mail size={12} />{x.email}</span><span className="flex items-center gap-1"><Phone size={12} />{x.phone}</span>{x.city && <span className="flex items-center gap-1"><MapPin size={12} />{x.city}</span>}{x.website && <span className="flex items-center gap-1"><Globe size={12} />{x.website}</span>}</div>
+                  <p className="mt-1.5 text-xs text-ink-3">Interested in {x.interest}{x.size && ` · ${x.size} students`}{x.message && <> · “{x.message}”</>}</p></div>
+                <button aria-label={`Remove ${x.college} from this list`} onClick={() => setList(l => l.filter(i => i.id !== x.id))} className="h-8 w-8 shrink-0 rounded-lg text-ink-4 hover:bg-bad-50 hover:text-bad-600"><Trash2 size={15} className="mx-auto" /></button></li>)}</ul>}
+            <p className="border-t border-line px-5 py-3 text-xs text-ink-3">Details are emailed to the Admivoice team. This list is stored in your browser only.</p>
           </div>
         </div>
       </div>
@@ -236,11 +263,42 @@ function Enquire() {
   )
 }
 
+/* ---------- WebConnect connect ---------- */
+function WebConnect() {
+  const [f, setF] = useState({ url: '', email: '', college: '' }); const [err, setErr] = useState<Record<string, string>>({}); const [state, setState] = useState<'idle' | 'sending' | 'ok' | 'fail'>('idle'); const [msg, setMsg] = useState('')
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault(); if (state === 'sending') return; const er: Record<string, string> = {}
+    if (!/^(https?:\/\/)?[\w-]+(\.[\w-]+)+(\/.*)?$/i.test(f.url.trim())) er.url = 'Enter your college website, e.g. www.college.edu'
+    if (!/\S+@\S+\.\S+/.test(f.email)) er.email = 'Enter a valid email'
+    setErr(er); if (Object.keys(er).length) return
+    setState('sending')
+    const r = await submitToWeb3Forms({ name: f.college.trim() || 'WebConnect request', email: f.email, college: f.college, website: f.url.trim(), message: `WebConnect request: please connect ${f.url.trim()}` }, `WebConnect request: ${f.url.trim()}`)
+    if (r.ok) { setState('ok'); setF({ url: '', email: '', college: '' }) } else { setState('fail'); setMsg(r.message) }
+  }
+  const pts = [[Link2, 'Add your website URL', 'Paste your official college website. That is all we need to start.'], [RefreshCw, 'We import verified info', 'Courses, departments, fee structures, eligibility and admission deadlines.'], [Bot, 'The AI answers from it', 'Voice calls and the website chatbot use only your verified content.'], [ShieldCheck, 'You stay in control', 'See sync status, last-updated times and error alerts for every source.']] as const
+  return (
+    <section id="webconnect" className="bg-white py-24"><div className="mx-auto grid max-w-6xl items-center gap-12 px-5 lg:grid-cols-2">
+      <Reveal><Eyebrow>WebConnect</Eyebrow><h2 className="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Connect your college website</h2><p className="mt-3 text-ink-3">WebConnect links your official website to Admivoice so every answer a student hears or reads is accurate and up to date.</p>
+        <ul className="mt-7 space-y-4">{pts.map(([I, t, d]) => <li key={t} className="flex gap-3"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-600"><I size={17} /></span><div><p className="font-medium">{t}</p><p className="text-sm text-ink-3">{d}</p></div></li>)}</ul></Reveal>
+      <Reveal delay={100}><form onSubmit={submit} noValidate className="rounded-3xl border border-line bg-canvas p-6 shadow-card sm:p-8">
+        <div className="flex items-center gap-3"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-navy-900 text-white"><Globe size={20} /></span><div><h3 className="font-semibold">Connect through your website</h3><p className="text-xs text-ink-3">We'll set up the connection and email you</p></div></div>
+        <div className="mt-5 grid gap-4">
+          <Lbl t="College website *" err={err.url}><input className={inpCls(err.url)} value={f.url} onChange={e => { setF({ ...f, url: e.target.value }); setErr({ ...err, url: '' }); setState('idle') }} placeholder="www.yourcollege.edu" autoComplete="url" /></Lbl>
+          <Lbl t="College name"><input className={inpCls()} value={f.college} onChange={e => setF({ ...f, college: e.target.value })} autoComplete="organization" /></Lbl>
+          <Lbl t="Your email *" err={err.email}><input type="email" className={inpCls(err.email)} value={f.email} onChange={e => { setF({ ...f, email: e.target.value }); setErr({ ...err, email: '' }); setState('idle') }} autoComplete="email" /></Lbl>
+          <button disabled={state === 'sending'} className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-brand-600 font-medium text-white hover:bg-brand-700 active:scale-[.98] disabled:opacity-60">{state === 'sending' ? <><Loader2 size={15} className="animate-spin" />Sending…</> : <><Link2 size={15} />Connect my website</>}</button>
+          {state === 'ok' && <p role="status" className="flex items-center gap-2 rounded-lg bg-ok-50 px-3 py-2 text-sm text-ok-700"><Check size={15} />Request received. We'll connect your website and email you.</p>}
+          {state === 'fail' && <p role="alert" className="flex items-center gap-2 rounded-lg bg-bad-50 px-3 py-2 text-sm text-bad-700"><AlertCircle size={15} />{msg}</p>}
+        </div></form></Reveal>
+    </div></section>
+  )
+}
+
 /* ---------- FAQ ---------- */
 function Faq() {
-  const q = [['Does Admivoice place real calls?', 'This site is a demo, so calls, transcripts and recordings are simulated and labelled as such. The platform is designed so real telephony and AI voice providers plug in later.'], ['Where does the AI get its answers?', 'From verified information imported from your own website through WebConnect (courses, fees, eligibility, deadlines). If nothing verified is found, it hands the question to an officer instead of guessing.'], ['Who can see what?', 'Five roles (Super Admin, College Admin, Admission Officer, Internship Coordinator and Read-Only Management) have different permissions. Data is isolated per institution and every key action is audit-logged.'], ['Can we run internships here too?', 'Yes. Internships is a first-class section: publish programmes, manage applicants, schedule interviews, track completion and issue certificates.'], ['What happens to the enquiry I submit below?', 'In this demo it is saved in your browser only, and shown beside the form. Nothing is sent to a server.']]
+  const q = [['Does Admivoice place real calls?', 'The live demo uses simulated calls, transcripts and recordings, clearly labelled as such. The platform is designed so real telephony and AI voice providers plug in later.'], ['Where does the AI get its answers?', 'From verified information imported from your own website through WebConnect (courses, fees, eligibility, deadlines). If nothing verified is found, it hands the question to an officer instead of guessing.'], ['Who can see what?', 'Five roles (Super Admin, College Admin, Admission Officer, Internship Coordinator and Read-Only Management) have different permissions. Data is isolated per institution and every key action is audit-logged.'], ['Can we run internships here too?', 'Yes. Internships is a first-class section: publish programmes, manage applicants, schedule interviews, track completion and issue certificates.'], ['What happens to the form I submit?', 'Your college details are emailed to the Admivoice team so we can contact you. A copy is also shown beside the form, stored in your own browser only.']]
   return (
-    <section id="faq" className="bg-white py-24"><div className="mx-auto max-w-3xl px-5">
+    <section id="faq" className="bg-canvas py-24"><div className="mx-auto max-w-3xl px-5">
       <Reveal className="text-center"><Eyebrow>FAQ</Eyebrow><h2 className="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Questions, answered</h2></Reveal>
       <div className="mt-10 divide-y divide-line rounded-2xl border border-line bg-white shadow-card">{q.map(([a, b]) => <details key={a} className="group px-5 py-4 [&_summary::-webkit-details-marker]:hidden"><summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-ink"><span>{a}</span><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-ink-3 transition-colors group-open:bg-brand-600 group-open:text-white"><Plus size={13} className="group-open:hidden" /><Minus size={13} className="hidden group-open:block" /></span></summary><p className="mt-3 pr-10 text-sm leading-relaxed text-ink-3">{b}</p></details>)}</div>
     </div></section>
@@ -273,7 +331,7 @@ export default function Landing() {
     <>
       <a href="#product" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-lg focus:bg-white focus:px-3 focus:py-2">Skip to content</a>
       <Header />
-      <main><Hero /><Stats /><Workflows /><Product /><How /><Roles /><Internships /><Enquire /><Faq /><Cta /></main>
+      <main><Hero /><Stats /><Workflows /><Product /><How /><Roles /><Internships /><Enquire /><WebConnect /><Faq /><Cta /></main>
       <Sticky />
       <footer className="bg-navy-950 pb-24 pt-12 text-slate-400 md:pb-10"><div className="mx-auto max-w-6xl px-5"><div className="flex flex-wrap items-start justify-between gap-8"><div className="max-w-xs"><Logo light /><p className="mt-3 text-sm">AI voice platform for admissions, outreach and internships in education.</p></div><nav className="grid grid-cols-2 gap-x-12 gap-y-2 text-sm" aria-label="Footer">{NAV.map(([l, h]) => <a key={h} href={h} className="hover:text-white">{l}</a>)}<a href="#/login" className="hover:text-white">Live demo</a></nav></div>
         <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs"><p>© 2026 Admivoice. All rights reserved. · Built by <a href="https://dialgrow.com" target="_blank" rel="noopener noreferrer" className="font-semibold text-white underline-offset-4 hover:underline">DialGrow</a></p><p className="flex gap-4"><span>Terms</span><span>Privacy</span><span>Security</span></p></div></div></footer>

@@ -5,7 +5,7 @@ import { INTERN_STAGES, type InternApp, type InternStage, type Internship } from
 import { Avatar, Badge, Button, Card, CardHeader, DataTable, Empty, Field, FilterSelect, Input, Modal, PageHeader, Progress, SearchInput, Segmented, Select, Stat, Tabs, Textarea, Dropdown, MenuItem, type Col, type Tone } from '@/components/ui'
 import { cn, download, fmtDate, fmtDateTime, toCSV, uid, ago } from '@/lib/utils'
 
-const COORD = ['Dr. Anitha Rao', 'Prof. Rahul Nambiar', 'Dr. Meera Krishnan', 'Ms. Lata Subramanian', 'Mr. Ashok Verma']
+const COORD = ['Dr. Anitha', 'Prof. Rahul', 'Dr. Meera', 'Ms. Lata', 'Mr. Ashok']
 const S_TONE: Record<InternStage, Tone> = { Applied: 'slate', 'Under Review': 'brand', Shortlisted: 'violet', Interview: 'warn', Selected: 'ok', 'In Progress': 'brand', Completed: 'ok' }
 const DEPTS = ['Computer Science', 'Management', 'Electronics', 'Sciences', 'Commerce', 'Mechanical']
 const blank: Internship = { id: '', title: '', dept: 'Computer Science', duration: '8 weeks', positions: 3, filled: 0, coordinator: COORD[0], status: 'draft', mode: 'Hybrid', stipend: '', deadline: new Date(Date.now() + 20 * 864e5).toISOString(), description: '', skills: [], certTemplate: 'Standard Completion' }
