@@ -4,6 +4,7 @@ import { AppProvider, useApp } from '@/lib/store'
 import Layout from '@/components/Layout'
 import Login from '@/pages/Login'
 import Landing from '@/Landing'
+import InternshipsPage from '@/InternshipsPage'
 import { PageSkeleton } from '@/components/ui'
 const Overview = lazy(() => import('@/pages/Overview'))
 const Voice = lazy(() => import('@/pages/Voice'))
@@ -17,7 +18,7 @@ const SettingsPage = lazy(() => import('@/pages/Settings'))
 
 function Routed() {
   const { session } = useApp(); const { pathname } = useLocation()
-  if (!session) return pathname === '/login' ? <Login /> : <Landing />
+  if (!session) return pathname === '/login' ? <Login /> : pathname === '/internships' ? <InternshipsPage /> : <Landing />
   return (
     <Suspense fallback={<div className="p-8"><PageSkeleton /></div>}>
       <Routes>

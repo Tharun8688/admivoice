@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Waves, Code2, Terminal, Megaphone, Link2, RefreshCw, Loader2, AlertCircle, BellRing, HeartHandshake, Building2, ArrowUp, PhoneCall, Globe, GraduationCap, Briefcase, BarChart3, ShieldCheck, Menu, X, ArrowRight, Check, Send, Trash2, Mail, Phone, MapPin, Bot, Users, Sparkles, ClipboardList, Play, Plus, Minus, Clock, FileCheck2, Award, CalendarClock, Lock, Languages } from 'lucide-react'
 import { loadEnquiries, saveEnquiries, submitToWeb3Forms, type Enquiry } from './lib/api'
 
-const NAV = [['Workflows', '#workflows'], ['Product', '#product'], ['Internships', '#internships'], ['WebConnect', '#webconnect'], ['FAQ', '#faq'], ['Enquire', '#enquire']]
+const NAV = [['Workflows', '#/workflows'], ['Product', '#/product'], ['Internships', '#/internships'], ['WebConnect', '#/webconnect'], ['FAQ', '#/faq'], ['Enquire', '#/enquire']]
 const COURSES = ['B.Tech CSE', 'B.Tech AI & ML', 'B.Tech ECE', 'MBA', 'BBA', 'B.Sc Data Science', 'B.Com Honours']
 
 /* ---------- helpers ---------- */
@@ -16,7 +17,7 @@ function useReveal() {
   }, [])
   return ref
 }
-const Reveal = ({ children, className = '', delay = 0 }: { children: ReactNode; className?: string; delay?: number }) => { const r = useReveal(); return <div ref={r} style={{ transitionDelay: `${delay}ms` }} className={`reveal ${className}`}>{children}</div> }
+export const Reveal = ({ children, className = '', delay = 0 }: { children: ReactNode; className?: string; delay?: number }) => { const r = useReveal(); return <div ref={r} style={{ transitionDelay: `${delay}ms` }} className={`reveal ${className}`}>{children}</div> }
 function Count({ to, suffix = '' }: { to: number; suffix?: string }) {
   const [n, setN] = useState(0); const r = useRef<HTMLSpanElement>(null)
   useEffect(() => {
@@ -27,14 +28,14 @@ function Count({ to, suffix = '' }: { to: number; suffix?: string }) {
   }, [to])
   return <span ref={r}>{n}{suffix}</span>
 }
-const Eyebrow = ({ children, light }: { children: ReactNode; light?: boolean }) => <p className={`text-sm font-semibold ${light ? 'text-violet-300' : 'text-brand-600'}`}>{children}</p>
-function Logo({ light }: { light?: boolean }) {
-  return <a href="#top" className="flex items-center gap-2.5" aria-label="Admivoice home"><span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-violet2-500 shadow-md"><Waves size={17} className="text-white" /></span><span className={`text-[17px] font-semibold tracking-tight ${light ? 'text-white' : 'text-ink'}`}>Admivoice</span></a>
+export const Eyebrow = ({ children, light }: { children: ReactNode; light?: boolean }) => <p className={`text-sm font-semibold ${light ? 'text-violet-300' : 'text-brand-600'}`}>{children}</p>
+export function Logo({ light }: { light?: boolean }) {
+  return <a href="#/" className="flex items-center gap-2.5" aria-label="Admivoice home"><span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-violet2-500 shadow-md"><Waves size={17} className="text-white" /></span><span className={`text-[17px] font-semibold tracking-tight ${light ? 'text-white' : 'text-ink'}`}>Admivoice</span></a>
 }
-const Wave = ({ n = 36, color = 'bg-violet-400' }: { n?: number; color?: string }) => <div className="flex h-8 items-center gap-[3px]" aria-hidden>{Array.from({ length: n }, (_, i) => <span key={i} style={{ animationDelay: `${(i % 8) * 90}ms`, height: `${30 + ((i * 37) % 70)}%` }} className={`w-[3px] flex-1 origin-center animate-wave rounded-full ${color}`} />)}</div>
+export const Wave = ({ n = 36, color = 'bg-violet-400' }: { n?: number; color?: string }) => <div className="flex h-8 items-center gap-[3px]" aria-hidden>{Array.from({ length: n }, (_, i) => <span key={i} style={{ animationDelay: `${(i % 8) * 90}ms`, height: `${30 + ((i * 37) % 70)}%` }} className={`w-[3px] flex-1 origin-center animate-wave rounded-full ${color}`} />)}</div>
 
 /* ---------- header ---------- */
-function Header() {
+export function Header() {
   const [open, setOpen] = useState(false); const [sc, setSc] = useState(false)
   useEffect(() => { const f = () => setSc(window.scrollY > 12); f(); window.addEventListener('scroll', f, { passive: true }); return () => window.removeEventListener('scroll', f) }, [])
   return (
@@ -42,7 +43,7 @@ function Header() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
         <Logo light />
         <nav className="hidden items-center gap-7 lg:flex" aria-label="Main">{NAV.map(([l, h]) => <a key={h} href={h} className="text-sm text-slate-300 transition-colors hover:text-white">{l}</a>)}</nav>
-        <div className="hidden items-center gap-2 lg:flex"><a href="#enquire" className="inline-flex h-9 items-center rounded-lg px-3 text-sm font-medium text-slate-200 hover:text-white">Enquire</a><a href="#/login" className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-white px-4 text-sm font-medium text-navy-900 transition-colors hover:bg-slate-100"><Play size={13} className="fill-current" />Live demo</a></div>
+        <div className="hidden items-center gap-2 lg:flex"><a href="#/enquire" className="inline-flex h-9 items-center rounded-lg px-3 text-sm font-medium text-slate-200 hover:text-white">Enquire</a><a href="#/login" className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-white px-4 text-sm font-medium text-navy-900 transition-colors hover:bg-slate-100"><Play size={13} className="fill-current" />Live demo</a></div>
         <button className="text-white lg:hidden" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} onClick={() => setOpen(o => !o)}>{open ? <X /> : <Menu />}</button>
       </div>
       {open && <nav className="flex flex-col gap-1 border-t border-white/10 px-5 pb-5 pt-2 lg:hidden">{NAV.map(([l, h]) => <a key={h} onClick={() => setOpen(false)} href={h} className="rounded-lg px-2 py-2.5 text-slate-200 hover:bg-white/5">{l}</a>)}<a href="#/login" className="mt-2 inline-flex h-11 items-center justify-center rounded-lg bg-white font-medium text-navy-900">View live demo</a></nav>}
@@ -63,7 +64,7 @@ function Hero() {
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-slate-300">From shortlisting to seat confirmation, Admivoice's AI voice platform handles every student touchpoint, at machine scale, with human warmth.</p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a href="#/login" className="group inline-flex h-12 items-center gap-2 rounded-xl bg-brand-500 px-6 font-medium text-white shadow-lg shadow-brand-600/30 transition-all hover:bg-brand-600 hover:shadow-brand-600/50"><Play size={15} className="fill-current" />Start free trial</a>
-            <a href="#enquire" className="inline-flex h-12 items-center gap-2 rounded-xl border border-white/20 px-6 font-medium text-white transition-colors hover:bg-white/5">Book a demo <ArrowRight size={16} /></a>
+            <a href="#/enquire" className="inline-flex h-12 items-center gap-2 rounded-xl border border-white/20 px-6 font-medium text-white transition-colors hover:bg-white/5">Book a demo <ArrowRight size={16} /></a>
           </div>
           <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-400">{['Multi-language support', 'CRM-ready outcome logging', 'FERPA-aware data handling'].map(t => <li key={t} className="flex items-center gap-1.5"><Check size={14} className="text-emerald-400" />{t}</li>)}</ul>
         </div>
@@ -172,27 +173,14 @@ function Roles() {
   )
 }
 
-/* ---------- internships band ---------- */
-const ROLES_INT = [
-  [Code2, 'JavaScript Intern', 'Build interactive pages and small web apps with the admissions tech team.', ['JavaScript', 'HTML & CSS', 'Git'], '8 weeks · Hybrid', '3 spots left'],
-  [Terminal, 'Python Intern', 'Automate reports and analyse enquiry data with Python scripts and notebooks.', ['Python', 'Data handling', 'Automation'], '8 weeks · Remote', '3 spots left'],
-  [Megaphone, 'Student Partner Intern', 'Represent the college to prospective students, host campus tours and support admission drives.', ['Communication', 'Public speaking', 'Events'], '10 weeks · On-campus', '4 spots left'],
-] as const
-function Internships() {
+/* ---------- internships teaser ---------- */
+function InternshipTeaser() {
   return (
-    <section id="internships" className="relative overflow-hidden bg-navy-900 py-24 text-white">
-      <div className="absolute -right-20 top-10 h-80 w-80 rounded-full bg-violet2-500/20 blur-3xl" /><div className="absolute -left-20 bottom-0 h-72 w-72 rounded-full bg-brand-600/20 blur-3xl" />
-      <div className="relative mx-auto max-w-6xl px-5">
-        <Reveal className="mx-auto max-w-2xl text-center"><Eyebrow light>Internships · for 2nd-year students</Eyebrow><h2 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Real roles for second-year students</h2><p className="mt-3 text-slate-300">Admivoice ships with a complete internship portal: publish roles, review applicants, schedule interviews and issue certificates.</p></Reveal>
-        <div className="mt-12 grid gap-5 md:grid-cols-3">{ROLES_INT.map(([I, t, d, sk, meta, spots], i) => <Reveal key={t} delay={i * 80}><article className="flex h-full flex-col rounded-2xl border border-white/10 bg-white/[0.06] p-6 backdrop-blur transition-all hover:-translate-y-1 hover:bg-white/[0.09]">
-          <div className="flex items-start justify-between"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-violet2-500 shadow-lg"><I size={20} /></span><span className="rounded-full bg-emerald-500/15 px-2.5 py-1 text-xs font-medium text-emerald-300">{spots}</span></div>
-          <h3 className="mt-5 text-lg font-semibold">{t}</h3><p className="mt-2 flex-1 text-sm leading-relaxed text-slate-300">{d}</p>
-          <ul className="mt-4 flex flex-wrap gap-1.5">{sk.map(x => <li key={x} className="rounded-full bg-white/10 px-2.5 py-1 text-xs text-slate-200">{x}</li>)}</ul>
-          <p className="mt-4 flex items-center gap-2 border-t border-white/10 pt-4 text-xs text-slate-400"><Clock size={12} />{meta}<span className="ml-auto rounded bg-violet2-500/20 px-1.5 py-0.5 font-medium text-violet-200">2nd year</span></p></article></Reveal>)}</div>
-        <Reveal className="mt-10"><div className="mx-auto grid max-w-3xl gap-3 sm:grid-cols-4">{[[FileCheck2, 'Publish roles'], [Users, 'Review applicants'], [CalendarClock, 'Schedule interviews'], [Award, 'Issue certificates']].map(([I, t]) => { const Ic = I as typeof Award; return <div key={t as string} className="flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-sm"><Ic size={15} className="text-violet-300" />{t as string}</div> })}</div>
-          <div className="mt-6 text-center"><a href="#/login" className="inline-flex h-11 items-center gap-2 rounded-xl bg-white px-5 text-sm font-medium text-navy-900 hover:bg-slate-100">See the internship portal in the demo <ArrowRight size={15} /></a><p className="mt-3 text-xs text-slate-500">Roles shown are sample listings.</p></div></Reveal>
-      </div>
-    </section>
+    <section className="bg-white py-20"><div className="mx-auto max-w-6xl px-5"><Reveal><div className="grid items-center gap-8 rounded-3xl border border-line bg-canvas p-8 sm:p-10 lg:grid-cols-[1.2fr_1fr]">
+      <div><Eyebrow>Internships</Eyebrow><h2 className="mt-2 text-2xl font-semibold tracking-tight text-ink sm:text-3xl">Internship roles for 2nd-year students</h2><p className="mt-3 text-ink-3">JavaScript, Python and Student Partner roles, plus a full portal to publish, review, interview and certify.</p>
+        <a href="#/internships" className="mt-6 inline-flex h-11 items-center gap-2 rounded-xl bg-navy-900 px-5 text-sm font-medium text-white hover:bg-navy-800">View internships <ArrowRight size={15} /></a></div>
+      <ul className="grid gap-3">{[[Code2, 'JavaScript Intern'], [Terminal, 'Python Intern'], [Megaphone, 'Student Partner Intern']].map(([I, t]) => { const Ic = I as typeof Code2; return <li key={t as string} className="flex items-center gap-3 rounded-xl border border-line bg-white px-4 py-3 shadow-card"><span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-50 text-brand-600"><Ic size={17} /></span><span className="font-medium">{t as string}</span><span className="ml-auto rounded bg-violet2-50 px-1.5 py-0.5 text-xs font-medium text-violet-700">2nd year</span></li> })}</ul>
+    </div></Reveal></div></section>
   )
 }
 
@@ -200,8 +188,8 @@ const empty = { college: '', name: '', role: 'Admissions officer', email: '', ph
 const ROLES = ['Admissions officer', 'Principal / Director', 'Internship coordinator', 'Management', 'Other']
 const SIZES = ['', 'Under 500', '500 – 2,000', '2,000 – 10,000', '10,000+']
 const INTERESTS = ['AI Voice + Admissions', 'AI Voice', 'WebConnect', 'Internships', 'Everything']
-const inpCls = (bad?: string) => `h-10 w-full rounded-lg border bg-white px-3 text-sm placeholder:text-ink-4 hover:border-slate-300 focus:border-brand-500 ${bad ? 'border-bad-500' : 'border-line'}`
-const Lbl = ({ t, err, children }: { t: string; err?: string; children: ReactNode }) => <label className="block"><span className="mb-1.5 block text-xs font-medium text-ink-2">{t}</span>{children}{err && <span role="alert" className="mt-1 block text-xs text-bad-600">{err}</span>}</label>
+export const inpCls = (bad?: string) => `h-10 w-full rounded-lg border bg-white px-3 text-sm placeholder:text-ink-4 hover:border-slate-300 focus:border-brand-500 ${bad ? 'border-bad-500' : 'border-line'}`
+export const Lbl = ({ t, err, children }: { t: string; err?: string; children: ReactNode }) => <label className="block"><span className="mb-1.5 block text-xs font-medium text-ink-2">{t}</span>{children}{err && <span role="alert" className="mt-1 block text-xs text-bad-600">{err}</span>}</label>
 
 function Enquire() {
   const [list, setList] = useState<Enquiry[]>(loadEnquiries); const [f, setF] = useState(empty); const [err, setErr] = useState<Record<string, string>>({})
@@ -263,34 +251,37 @@ function Enquire() {
   )
 }
 
-/* ---------- WebConnect connect ---------- */
+/* ---------- WebConnect showcase ---------- */
 function WebConnect() {
-  const [f, setF] = useState({ url: '', email: '', college: '' }); const [err, setErr] = useState<Record<string, string>>({}); const [state, setState] = useState<'idle' | 'sending' | 'ok' | 'fail'>('idle'); const [msg, setMsg] = useState('')
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault(); if (state === 'sending') return; const er: Record<string, string> = {}
-    if (!/^(https?:\/\/)?[\w-]+(\.[\w-]+)+(\/.*)?$/i.test(f.url.trim())) er.url = 'Enter your college website, e.g. www.college.edu'
-    if (!/\S+@\S+\.\S+/.test(f.email)) er.email = 'Enter a valid email'
-    setErr(er); if (Object.keys(er).length) return
-    setState('sending')
-    const r = await submitToWeb3Forms({ name: f.college.trim() || 'WebConnect request', email: f.email, college: f.college, website: f.url.trim(), message: `WebConnect request: please connect ${f.url.trim()}` }, `WebConnect request: ${f.url.trim()}`)
-    if (r.ok) { setState('ok'); setF({ url: '', email: '', college: '' }) } else { setState('fail'); setMsg(r.message) }
-  }
-  const pts = [[Link2, 'Add your website URL', 'Paste your official college website. That is all we need to start.'], [RefreshCw, 'We import verified info', 'Courses, departments, fee structures, eligibility and admission deadlines.'], [Bot, 'The AI answers from it', 'Voice calls and the website chatbot use only your verified content.'], [ShieldCheck, 'You stay in control', 'See sync status, last-updated times and error alerts for every source.']] as const
+  const items = [['Verified website knowledge', 'Courses, departments, fee structures, eligibility and deadlines imported from your official college website.'], ['Website chatbot', 'Answers visitor questions instantly and always cites the page it used.'], ['Sync status & alerts', 'See last-updated times and error alerts for every connected source.']]
+  const opts = [[PhoneCall, 'Talk Now', 'Talk to our AI assistant live'], [Bot, 'Chat with us', 'Message our AI assistant'], [CalendarClock, 'Call me later', 'Leave your details for an AI callback']] as const
+  const [open, setOpen] = useState(0); const [pick, setPick] = useState(0)
   return (
-    <section id="webconnect" className="bg-white py-24"><div className="mx-auto grid max-w-6xl items-center gap-12 px-5 lg:grid-cols-2">
-      <Reveal><Eyebrow>WebConnect</Eyebrow><h2 className="mt-2 text-3xl font-semibold tracking-tight text-ink sm:text-4xl">Connect your college website</h2><p className="mt-3 text-ink-3">WebConnect links your official website to Admivoice so every answer a student hears or reads is accurate and up to date.</p>
-        <ul className="mt-7 space-y-4">{pts.map(([I, t, d]) => <li key={t} className="flex gap-3"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-600"><I size={17} /></span><div><p className="font-medium">{t}</p><p className="text-sm text-ink-3">{d}</p></div></li>)}</ul></Reveal>
-      <Reveal delay={100}><form onSubmit={submit} noValidate className="rounded-3xl border border-line bg-canvas p-6 shadow-card sm:p-8">
-        <div className="flex items-center gap-3"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-navy-900 text-white"><Globe size={20} /></span><div><h3 className="font-semibold">Connect through your website</h3><p className="text-xs text-ink-3">We'll set up the connection and email you</p></div></div>
-        <div className="mt-5 grid gap-4">
-          <Lbl t="College website *" err={err.url}><input className={inpCls(err.url)} value={f.url} onChange={e => { setF({ ...f, url: e.target.value }); setErr({ ...err, url: '' }); setState('idle') }} placeholder="www.yourcollege.edu" autoComplete="url" /></Lbl>
-          <Lbl t="College name"><input className={inpCls()} value={f.college} onChange={e => setF({ ...f, college: e.target.value })} autoComplete="organization" /></Lbl>
-          <Lbl t="Your email *" err={err.email}><input type="email" className={inpCls(err.email)} value={f.email} onChange={e => { setF({ ...f, email: e.target.value }); setErr({ ...err, email: '' }); setState('idle') }} autoComplete="email" /></Lbl>
-          <button disabled={state === 'sending'} className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-brand-600 font-medium text-white hover:bg-brand-700 active:scale-[.98] disabled:opacity-60">{state === 'sending' ? <><Loader2 size={15} className="animate-spin" />Sending…</> : <><Link2 size={15} />Connect my website</>}</button>
-          {state === 'ok' && <p role="status" className="flex items-center gap-2 rounded-lg bg-ok-50 px-3 py-2 text-sm text-ok-700"><Check size={15} />Request received. We'll connect your website and email you.</p>}
-          {state === 'fail' && <p role="alert" className="flex items-center gap-2 rounded-lg bg-bad-50 px-3 py-2 text-sm text-bad-700"><AlertCircle size={15} />{msg}</p>}
-        </div></form></Reveal>
-    </div></section>
+    <section id="webconnect" className="relative overflow-hidden bg-navy-950 py-24 text-white">
+      <div className="absolute -left-24 top-10 h-80 w-80 rounded-full bg-brand-600/20 blur-3xl" /><div className="absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-violet2-500/15 blur-3xl" />
+      <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 lg:grid-cols-2">
+        <Reveal>
+          <span className="block h-[3px] w-14 rounded bg-brand-500" />
+          <p className="mt-4 text-xs font-semibold uppercase tracking-[0.2em] text-violet-300">WebConnect</p>
+          <h2 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">Connect your college website</h2>
+          <p className="mt-4 max-w-lg text-lg text-slate-400">Link your official website once. Voice, chat and AI callbacks then answer every visitor with verified information.</p>
+          <a href="#/login" className="mt-7 inline-flex h-12 items-center gap-2 rounded-xl bg-brand-500 px-6 font-medium text-white shadow-lg shadow-brand-600/30 transition-colors hover:bg-brand-600">Explore WebConnect <ArrowRight size={16} /></a>
+          <ul className="mt-9 border-t border-white/10">{items.map(([t, d], i) => <li key={t} className="border-b border-white/10"><button onClick={() => setOpen(i)} aria-expanded={open === i} className="flex w-full items-center justify-between py-5 text-left"><span className={`text-xl font-medium transition-colors ${open === i ? 'text-white' : 'text-slate-500 hover:text-slate-300'}`}>{t}</span><ArrowRight size={16} className={`transition-transform ${open === i ? 'rotate-90 text-brand-500' : 'text-slate-600'}`} /></button>{open === i && <p className="animate-fadeUp pb-5 pr-8 text-sm leading-relaxed text-slate-400">{d}</p>}</li>)}</ul>
+          <p className="mt-6 text-sm text-slate-500">Want it connected to your site? Add your website in the <a href="#/enquire" className="text-violet-300 underline-offset-4 hover:underline">demo request form</a> and we'll set it up.</p>
+        </Reveal>
+        <Reveal delay={100}>
+          <div className="relative rounded-[28px] bg-canvas p-5 shadow-2xl sm:p-8" aria-hidden>
+            <div className="flex items-center gap-2"><span className="h-3 w-3 rounded-full bg-[#ef6a5e]" /><span className="h-3 w-3 rounded-full bg-[#f5be4f]" /><span className="h-3 w-3 rounded-full bg-[#62c554]" /><span className="ml-3 h-7 flex-1 rounded-full bg-slate-200/80" /></div>
+            <div className="mt-6 grid gap-3"><div className="h-7 w-40 rounded-full bg-slate-200/80" /><div className="h-4 w-3/4 rounded-full bg-slate-200/70" /><div className="h-4 w-1/2 rounded-full bg-slate-200/70" /><div className="mt-2 grid grid-cols-2 gap-3"><div className="h-28 rounded-2xl bg-slate-200/60" /><div className="h-28 rounded-2xl bg-slate-200/60" /></div></div>
+            <div className="relative ml-auto mt-[-120px] w-full max-w-[290px] rounded-2xl bg-white p-3 shadow-pop ring-1 ring-line sm:mt-[-150px]">
+              <div className="space-y-2">{opts.map(([I, t, d], i) => <button key={t} tabIndex={-1} onMouseEnter={() => setPick(i)} className={`flex w-full items-center gap-3 rounded-xl border p-3 text-left transition-all ${pick === i ? 'border-brand-200 bg-brand-50/60' : 'border-line'}`}><span className={`flex h-9 w-9 items-center justify-center rounded-lg ${pick === i ? 'bg-brand-600 text-white' : 'bg-brand-50 text-brand-600'}`}><I size={17} /></span><span><span className="block text-sm font-semibold text-ink">{t}</span><span className="block text-[11px] text-ink-3">{d}</span></span></button>)}</div>
+              <p className="mt-3 text-center text-[10px] text-ink-4">Powered by <span className="font-semibold text-brand-600">Admivoice</span></p>
+              <span className="mt-2 ml-auto flex w-fit items-center gap-2 rounded-full bg-brand-600 px-4 py-2 text-xs font-medium text-white shadow-lg"><Waves size={13} />Talk to us</span>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
   )
 }
 
@@ -310,7 +301,7 @@ function Cta() {
     <section className="bg-canvas px-5 pb-24"><Reveal><div className="relative mx-auto max-w-6xl overflow-hidden rounded-3xl bg-navy-900 px-6 py-14 text-center text-white sm:py-16">
       <div className="absolute -left-10 -top-10 h-64 w-64 rounded-full bg-brand-600/30 blur-3xl" /><div className="absolute -bottom-16 -right-10 h-64 w-64 rounded-full bg-violet2-500/25 blur-3xl" />
       <div className="relative"><h2 className="mx-auto max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl">Ready to transform your Education outreach?</h2><p className="mx-auto mt-3 max-w-xl text-slate-300">Join education &amp; institutions teams automating conversations and growing faster.</p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3"><a href="#/login" className="inline-flex h-12 items-center gap-2 rounded-xl bg-white px-6 font-medium text-navy-900 transition-colors hover:bg-slate-100"><Play size={15} className="fill-current" />Get started free</a><a href="#enquire" className="inline-flex h-12 items-center rounded-xl border border-white/20 px-6 font-medium hover:bg-white/5">Talk to sales</a></div></div>
+        <div className="mt-8 flex flex-wrap justify-center gap-3"><a href="#/login" className="inline-flex h-12 items-center gap-2 rounded-xl bg-white px-6 font-medium text-navy-900 transition-colors hover:bg-slate-100"><Play size={15} className="fill-current" />Get started free</a><a href="#/enquire" className="inline-flex h-12 items-center rounded-xl border border-white/20 px-6 font-medium hover:bg-white/5">Talk to sales</a></div></div>
     </div></Reveal></section>
   )
 }
@@ -320,21 +311,32 @@ function Sticky() {
   useEffect(() => { const f = () => setShow(window.scrollY > 600); f(); window.addEventListener('scroll', f, { passive: true }); return () => window.removeEventListener('scroll', f) }, [])
   return (
     <>
-      <div className={`fixed inset-x-0 bottom-0 z-30 flex gap-2 border-t border-line bg-white/95 p-3 backdrop-blur transition-transform duration-300 md:hidden ${show ? 'translate-y-0' : 'translate-y-full'}`}><a href="#/login" className="flex h-11 flex-1 items-center justify-center rounded-lg bg-brand-600 text-sm font-medium text-white">Start free trial</a><a href="#enquire" className="flex h-11 flex-1 items-center justify-center rounded-lg border border-line text-sm font-medium">Book a demo</a></div>
+      <div className={`fixed inset-x-0 bottom-0 z-30 flex gap-2 border-t border-line bg-white/95 p-3 backdrop-blur transition-transform duration-300 md:hidden ${show ? 'translate-y-0' : 'translate-y-full'}`}><a href="#/login" className="flex h-11 flex-1 items-center justify-center rounded-lg bg-brand-600 text-sm font-medium text-white">Start free trial</a><a href="#/enquire" className="flex h-11 flex-1 items-center justify-center rounded-lg border border-line text-sm font-medium">Book a demo</a></div>
       <button aria-label="Back to top" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className={`fixed bottom-6 right-4 z-30 hidden h-10 w-10 items-center justify-center rounded-full bg-navy-900 text-white shadow-lg transition-opacity md:flex ${show ? 'opacity-100' : 'pointer-events-none opacity-0'}`}><ArrowUp size={16} /></button>
     </>
   )
 }
 
+export function Footer() {
+  return (
+    <footer className="bg-navy-950 pb-24 pt-12 text-slate-400 md:pb-10"><div className="mx-auto max-w-6xl px-5"><div className="flex flex-wrap items-start justify-between gap-8"><div className="max-w-xs"><Logo light /><p className="mt-3 text-sm">AI voice platform for admissions, outreach and internships in education.</p></div><nav className="grid grid-cols-2 gap-x-12 gap-y-2 text-sm" aria-label="Footer">{NAV.map(([l, h]) => <a key={h} href={h} className="hover:text-white">{l}</a>)}<a href="#/login" className="hover:text-white">Live demo</a></nav></div>
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs"><p>© 2026 Admivoice. All rights reserved. · Built by <a href="https://dialgrow.com" target="_blank" rel="noopener noreferrer" className="font-semibold text-white underline-offset-4 hover:underline">DialGrow</a></p><p className="flex gap-4"><span>Terms</span><span>Privacy</span><span>Security</span></p></div></div></footer>
+  )
+}
+
 export default function Landing() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    const id = pathname.slice(1); if (!id) { window.scrollTo(0, 0); return }
+    const t = setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 60); return () => clearTimeout(t)
+  }, [pathname])
   return (
     <>
-      <a href="#product" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-lg focus:bg-white focus:px-3 focus:py-2">Skip to content</a>
+      <a href="#/product" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-lg focus:bg-white focus:px-3 focus:py-2">Skip to content</a>
       <Header />
-      <main><Hero /><Stats /><Workflows /><Product /><How /><Roles /><Internships /><Enquire /><WebConnect /><Faq /><Cta /></main>
+      <main><Hero /><Stats /><Workflows /><Product /><WebConnect /><How /><Roles /><InternshipTeaser /><Enquire /><Faq /><Cta /></main>
       <Sticky />
-      <footer className="bg-navy-950 pb-24 pt-12 text-slate-400 md:pb-10"><div className="mx-auto max-w-6xl px-5"><div className="flex flex-wrap items-start justify-between gap-8"><div className="max-w-xs"><Logo light /><p className="mt-3 text-sm">AI voice platform for admissions, outreach and internships in education.</p></div><nav className="grid grid-cols-2 gap-x-12 gap-y-2 text-sm" aria-label="Footer">{NAV.map(([l, h]) => <a key={h} href={h} className="hover:text-white">{l}</a>)}<a href="#/login" className="hover:text-white">Live demo</a></nav></div>
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs"><p>© 2026 Admivoice. All rights reserved. · Built by <a href="https://dialgrow.com" target="_blank" rel="noopener noreferrer" className="font-semibold text-white underline-offset-4 hover:underline">DialGrow</a></p><p className="flex gap-4"><span>Terms</span><span>Privacy</span><span>Security</span></p></div></div></footer>
+      <Footer />
     </>
   )
 }
